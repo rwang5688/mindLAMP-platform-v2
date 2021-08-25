@@ -9,6 +9,6 @@ echo "create-mindLAMP-platform-vpc in region=$1"
 aws cloudformation create-stack --stack-name mindLAMP-platform-v2-vpc \
 --template-body file://$MINDLAMP_PLATFORM_V2_SRC/mindLAMP-platform-v2-vpc.yaml \
 --capabilities CAPABILITY_NAMED_IAM \
---parameters file://mindLAMP-platform-vpc-parameters.json \
+--parameters file://mindLAMP-platform-v2-vpc-parameters.json \
 --region $1
 
