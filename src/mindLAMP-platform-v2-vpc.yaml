@@ -83,6 +83,41 @@ Resources:
         - Key: Name
           Value: !Sub ${ProjectName}-public-subnet-02
 
+  PrivateSubnet01:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: VPC
+      AvailabilityZone: 
+        Fn::Select: 
+          - 0
+          - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: !Ref PrivateSubnet01CidrBlock
+      MapPublicIpOnLaunch: 'False'
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-private-subnet-01
+  
+  PrivateSubnet02:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: VPC
+      AvailabilityZone: 
+        Fn::Select: 
+          - 1
+          - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: !Ref PrivateSubnet02CidrBlock
+      MapPublicIpOnLaunch: 'False'
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-private-subnet-02
+
+
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -147,8 +182,8 @@ Outputs:
     Description: Public Subnet 02 Id
     Value: !Ref PublicSubnet02
   PrivateSubnet01Id:
-    Description: Public Subnet 01 Id
-    Value: !Ref PublicSubnet01
-  PprivateSubnet02Id:
-    Description: Public Subnet 02 Id
-    Value: !Ref PublicSubnet02
+    Description: Private Subnet 01 Id
+    Value: !Ref PrivateSubnet01
+  PrivateSubnet02Id:
+    Description: Private Subnet 02 Id
+    Value: !Ref PrivateSubnet02
