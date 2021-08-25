@@ -1,0 +1,154 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: mindLAMP Platform v1
+
+Parameters:
+  ProjectName:
+    Description: Project name that will be used as the prefix for all deployed resources
+    Type: String
+    ConstraintDescription: Project name that will be used as the prefix for all deployed resources
+    Default: 'mindLAMP-platform-v2'
+  VpcCidrBlock:
+    Description: VPC CIDR Block
+    Type: String
+    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
+    ConstraintDescription: VPC CIDR Block
+    Default: '10.0.0.0/16'
+  PublicSubnet01CidrBlock:
+    Description: Public Subnet 01 CIDR Block
+    Type: String
+    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
+    ConstraintDescription: Public Subnet 01 CIDR Block
+    Default: '10.0.1.0/24'
+  PublicSubnet02CidrBlock:
+    Description: Public Subnet 02 CIDR Block
+    Type: String
+    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
+    ConstraintDescription: Public Subnet 02 CIDR Block
+    Default: '10.0.2.0/24'
+  PrivateSubnet01CidrBlock:
+    Description: Private Subnet 01 CIDR Block
+    Type: String
+    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
+    ConstraintDescription: Private Subnet 01 CIDR Block
+    Default: '10.0.11.0/24'
+  PrivateSubnet02CidrBlock:
+    Description: Private Subnet 02 CIDR Block
+    Type: String
+    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
+    ConstraintDescription: Private Subnet 02 CIDR Block
+    Default: '10.0.22.0/24'
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCidrBlock
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-vpc
+
+  PublicSubnet01:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: VPC
+      AvailabilityZone: 
+        Fn::Select: 
+          - 0
+          - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: !Ref PublicSubnet01CidrBlock
+      MapPublicIpOnLaunch: 'True'
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-public-subnet-01
+  
+  PublicSubnet02:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: VPC
+      AvailabilityZone: 
+        Fn::Select: 
+          - 1
+          - Fn::GetAZs: !Ref AWS::Region
+      CidrBlock: !Ref PublicSubnet02CidrBlock
+      MapPublicIpOnLaunch: 'True'
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-public-subnet-02
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: VPC
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-public-rt
+  
+  PublicSubnet01RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: PublicRouteTable
+      SubnetId:
+        Ref: PublicSubnet01
+  
+  PublicSubnet02RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: PublicRouteTable
+      SubnetId:
+        Ref: PublicSubnet02
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-igw
+
+  VPCGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: VPC
+      InternetGatewayId:
+        Ref: InternetGateway
+
+  IgwRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: InternetGateway
+
+Outputs:
+  VpcId:
+    Description: VPC Id
+    Value: !Ref VPC
+  PublicSubnet01Id:
+    Description: Public Subnet 01 Id
+    Value: !Ref PublicSubnet01
+  PublicSubnet02Id:
+    Description: Public Subnet 02 Id
+    Value: !Ref PublicSubnet02
+  PrivateSubnet01Id:
+    Description: Public Subnet 01 Id
+    Value: !Ref PublicSubnet01
+  PprivateSubnet02Id:
+    Description: Public Subnet 02 Id
+    Value: !Ref PublicSubnet02
