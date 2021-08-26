@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: mindLAMP Platform v2 DocumentDB setup
+
+Parameters:
+  ProjectName:
+    Description: Project name that will be used as the prefix for all deployed resources
+    Type: String
+    ConstraintDescription: Project name that will be used as the prefix for all deployed resources
+    Default: 'mindLAMP-platform-v2'
+
+  VPC:
+    Description: The id the VPC into which the RDS instance should be deployed
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /s360/sim-on-prem/vpc/id
+    
+  PrivateSubnet1:
+    Description: The id for one of the two private subnets in the VPC where the RDS instance should be deployed
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /s360/sim-on-prem/vpc/private_subnet_1
+    
+  PrivateSubnet2:
+    Description: The id for one of the two private subnets in the VPC where the RDS instance should be deployed
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /s360/sim-on-prem/vpc/private_subnet_2
+
+  DBAdminUsername:
+    NoEcho: "true"
+    Description : "The database admin account username"
+    Type: "String"
+    MinLength: "1"
+    MaxLength: "16"
+    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
+    ConstraintDescription : "Must begin with a letter and contain only alphanumeric characters."
+    Default: "docdbadmin"
+
+  DBAdminUserPassword:
+    NoEcho: "true"
+    Description : "The database admin account password"
+    Type: "String"
+    MinLength: "1"
+    MaxLength: "41"
+    AllowedPattern : "[a-zA-Z0-9]+"
+    ConstraintDescription : "must contain only alphanumeric characters."
+    Default: "iamdocdbadmin"
+
+  DBClusterName: 
+    Description : "Cluster name"
+    Type: "String"
+    MinLength: "1"
+    MaxLength: "64"
+    AllowedPattern : "[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*"
+    ConstraintDescription : "Must begin with a letter and contain only alphanumeric characters."
+    Default: "docdb-cluster"
+
+  DBInstanceClass:
+    Description : "Instance class. Please refer to: https://docs.aws.amazon.com/documentdb/latest/developerguide/db-instance-classes.html#db-instance-classes-by-region"
+    Type: "String"
+    AllowedValues:
+      - db.t3.medium
+      - db.r5.large
+      - db.r5.xlarge
+      - db.r5.2xlarge
+      - db.r5.4xlarge
+      - db.r5.12xlarge
+      - db.r5.24xlarge                             
+    ConstraintDescription : "Instance type must be of the ones supported for the region. Please refer to: https://docs.aws.amazon.com/documentdb/latest/developerguide/db-instance-classes.html#db-instance-classes-by-region"
+    Default: "db.t3.medium"
+
+  DBInstanceName: 
+    Default: "MyInstance"
+    Description : "Instance name"
+    Type: "String"
+    MinLength: "1"
+    MaxLength: "64"
+    AllowedPattern : "[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*"
+    ConstraintDescription : "Must begin with a letter and contain only alphanumeric characters."
+    Default: "docdb-instance"
+
+Resources:
+  DBCluster:
+    Type: "AWS::DocDB::DBCluster"
+    DeletionPolicy: Delete
+    Properties:
+      DBClusterIdentifier: !Ref DBClusterName
+      MasterUsername: !Ref DBAdminUsername
+      MasterUserPassword: !Ref DBAdminUserPassword
+      EngineVersion: 4.0.0
+
+  DBInstance:
+    Type: "AWS::DocDB::DBInstance"
+    Properties:
+      DBClusterIdentifier: !Ref DBCluster
+      DBInstanceIdentifier: !Ref DBInstanceName
+      DBInstanceClass: !Ref DBInstanceClass
+    DependsOn: DBCluster
+
+Outputs:
+  ClusterId:
+    Value: !Ref DBCluster
+  ClusterEndpoint:
+    Value: !GetAtt DBCluster.Endpoint
+  ClusterPort:
+    Value: !GetAtt DBCluster.Port
+  EngineVersion:
+    Value: "4.0.0"
+
