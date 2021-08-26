@@ -311,3 +311,4 @@ Outputs:
   PrivateSubnet2Id:
     Description: Private Subnet 2 Id
     Value: !Ref PrivateSubnet2
+

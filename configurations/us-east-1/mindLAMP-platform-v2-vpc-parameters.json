@@ -5,23 +5,23 @@
     },
     {
         "ParameterKey": "VpcCidrBlock",
-        "ParameterValue": "10.0.0.0/16"
+        "ParameterValue": "10.192.0.0/16"
     },
     {
-        "ParameterKey": "PublicSubnet01CidrBlock",
-        "ParameterValue": "10.0.1.0/24"
+        "ParameterKey": "PublicSubnet1CidrBlock",
+        "ParameterValue": "10.192.10.0/24"
     },
     {
-        "ParameterKey": "PublicSubnet02CidrBlock",
-        "ParameterValue": "10.0.2.0/24"
+        "ParameterKey": "PublicSubnet2CidrBlock",
+        "ParameterValue": "10.192.11.0/24"
     },
     {
-        "ParameterKey": "PrivateSubnet01CidrBlock",
-        "ParameterValue": "10.0.11.0/24"
+        "ParameterKey": "PrivateSubnet1CidrBlock",
+        "ParameterValue": "10.192.20.0/24"
     },
     {
-        "ParameterKey": "PrivateSubnet02CidrBlock",
-        "ParameterValue": "10.0.22.0/24"
+        "ParameterKey": "PrivateSubnet2CidrBlock",
+        "ParameterValue": "10.192.20.0/24"
     }
 ]
 
