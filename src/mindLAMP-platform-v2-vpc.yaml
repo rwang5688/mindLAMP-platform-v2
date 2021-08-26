@@ -248,8 +248,7 @@ Resources:
       Value: !Ref VPC
       Type: String
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
+        Project: !Sub ${ProjectName}
 
   ParamPublicSubnet1:
     Type: AWS::SSM::Parameter
@@ -259,8 +258,7 @@ Resources:
       Value: !Ref PublicSubnet1
       Type: String
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
+        Project: !Sub ${ProjectName}
 
   ParamPublicSubnet2:
     Type: AWS::SSM::Parameter
@@ -270,8 +268,7 @@ Resources:
       Value: !Ref PublicSubnet2
       Type: String
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
+        Project: !Sub ${ProjectName}
 
   ParamPrivateSubnet1:
     Type: AWS::SSM::Parameter
@@ -281,8 +278,7 @@ Resources:
       Value: !Ref PrivateSubnet1
       Type: String
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
+        Project: !Sub ${ProjectName}
 
   ParamPrivateSubnet2:
     Type: AWS::SSM::Parameter
@@ -292,8 +288,7 @@ Resources:
       Value: !Ref PrivateSubnet2
       Type: String
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
+        Project: !Sub ${ProjectName}
 
 Outputs:
   VpcId:
