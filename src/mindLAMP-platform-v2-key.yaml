@@ -11,7 +11,7 @@ Parameters:
     Description: Suffix for the CMK key alias name; prefix is ${ProjectName}
     Type: String
     ConstraintDescription: Suffix for the CMK key alias name; prefix is ${ProjectName}
-    Default: 'key-1'
+    Default: 'key'
 
 Resources:
   myKey:
@@ -41,7 +41,7 @@ Resources:
               - ''
               - - 'arn:aws:iam::'
                 - !Ref AWS::AccountId
-                - ':aws-admin'
+                - ':role/Admin'
           Action:
           - kms:Create*
           - kms:Describe*
@@ -63,7 +63,7 @@ Resources:
               - ''
               - - 'arn:aws:iam::'
                 - !Ref AWS::AccountId
-                - ':aws-admin'
+                - ':role/Admin'
           Action:
           - kms:DescribeKey
           - kms:Encrypt
@@ -81,7 +81,7 @@ Resources:
   myKeyAlias:
     Type: 'AWS::KMS::Alias'
     Properties:
-      AliasName: alias/${ProjectName}-${KeyAliasNameSuffix}
+      AliasName: !Sub alias/${ProjectName}-${KeyAliasNameSuffix}
       TargetKeyId: !Ref myKey
 
   ParamMyKey:
@@ -105,9 +105,9 @@ Resources:
         Project: !Sub ${ProjectName}
 
 Outputs:
-  MyKeyARN:
+  KeyARN:
     Description: The ARN for myKey
     Value: !Ref myKey
-  MyKeyAlias:
+  KeyAlias:
     Description: The Alias for myKey
     Value: !Ref myKeyAlias

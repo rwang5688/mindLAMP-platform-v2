@@ -5,7 +5,7 @@
     },
     {
         "ParameterKey": "KeyAliasNameSuffix",
-        "ParameterValue": "test-key-1111"
+        "ParameterValue": "key"
     }
 ]
 
