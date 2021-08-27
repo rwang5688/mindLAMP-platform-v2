@@ -37,7 +37,11 @@ Resources:
         - Sid: Allow administration of the key
           Effect: Allow
           Principal:
-            AWS: arn:aws:iam::111122223333:user/Alice
+            AWS: !Join
+              - ''
+              - - 'arn:aws:iam::'
+                - !Ref AWS::AccountId
+                - ':aws-admin'
           Action:
           - kms:Create*
           - kms:Describe*
@@ -55,7 +59,11 @@ Resources:
         - Sid: Allow use of the key
           Effect: Allow
           Principal:
-            AWS: arn:aws:iam::111122223333:user/Bob
+            AWS: !Join
+              - ''
+              - - 'arn:aws:iam::'
+                - !Ref AWS::AccountId
+                - ':aws-admin'
           Action:
           - kms:DescribeKey
           - kms:Encrypt
@@ -65,15 +73,15 @@ Resources:
           - kms:GenerateDataKeyWithoutPlaintext
           Resource: '*'
       Tags:
-        - Key:
-            Ref: Key
-          Value:
-            Ref: Value
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-${KeyAliasNameSuffix}
 
   myKeyAlias:
     Type: 'AWS::KMS::Alias'
     Properties:
-      AliasName: alias/${KeyAliasName}
+      AliasName: alias/${ProjectName}-${KeyAliasNameSuffix}
       TargetKeyId: !Ref myKey
 
   ParamMyKey:

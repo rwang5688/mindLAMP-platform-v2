@@ -1,0 +1,11 @@
+[
+    {
+        "ParameterKey": "ProjectName",
+        "ParameterValue": "mindLAMP-platform-v2"
+    },
+    {
+        "ParameterKey": "KeyAliasNameSuffix",
+        "ParameterValue": "test-key-1111"
+    }
+]
+
