@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: mindLAMP Platform v1
+Description: mindLAMP Platform v2 VPC networking setup
 
 Parameters:
   ProjectName:

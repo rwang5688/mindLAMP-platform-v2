@@ -1,0 +1,113 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: mindLAMP Platform v2 KMS key setup
+
+Parameters:
+  ProjectName:
+    Description: Project name that will be used as the prefix for all deployed resources
+    Type: String
+    ConstraintDescription: Project name that will be used as the prefix for all deployed resources
+    Default: 'mindLAMP-platform-v2'
+  KeyAliasNameSuffix:
+    Description: Suffix for the CMK key alias name; prefix is ${ProjectName}
+    Type: String
+    ConstraintDescription: Suffix for the CMK key alias name; prefix is ${ProjectName}
+    Default: 'key'
+
+Resources:
+  myKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: An example symmetric CMK
+      EnableKeyRotation: true
+      PendingWindowInDays: 20
+      KeyPolicy:
+        Version: '2012-10-17'
+        Id: key-default-1
+        Statement:
+        - Sid: Enable IAM User Permissions
+          Effect: Allow
+          Principal:
+            AWS: !Join
+              - ''
+              - - 'arn:aws:iam::'
+                - !Ref AWS::AccountId
+                - ':root'
+          Action: kms:*
+          Resource: '*'
+        - Sid: Allow administration of the key
+          Effect: Allow
+          Principal:
+            AWS: !Join
+              - ''
+              - - 'arn:aws:iam::'
+                - !Ref AWS::AccountId
+                - ':role/Admin'
+          Action:
+          - kms:Create*
+          - kms:Describe*
+          - kms:Enable*
+          - kms:List*
+          - kms:Put*
+          - kms:Update*
+          - kms:Revoke*
+          - kms:Disable*
+          - kms:Get*
+          - kms:Delete*
+          - kms:ScheduleKeyDeletion
+          - kms:CancelKeyDeletion
+          Resource: '*'
+        - Sid: Allow use of the key
+          Effect: Allow
+          Principal:
+            AWS: !Join
+              - ''
+              - - 'arn:aws:iam::'
+                - !Ref AWS::AccountId
+                - ':role/Admin'
+          Action:
+          - kms:DescribeKey
+          - kms:Encrypt
+          - kms:Decrypt
+          - kms:ReEncrypt*
+          - kms:GenerateDataKey
+          - kms:GenerateDataKeyWithoutPlaintext
+          Resource: '*'
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-${KeyAliasNameSuffix}
+
+  myKeyAlias:
+    Type: 'AWS::KMS::Alias'
+    Properties:
+      AliasName: !Sub alias/${ProjectName}-${KeyAliasNameSuffix}
+      TargetKeyId: !Ref myKey
+
+  ParamMyKey:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: The ARN for myKey
+      Name: '/mindLAMP-platform-v2/kms/key_arn'
+      Value: !Ref myKey
+      Type: String
+      Tags:
+        Project: !Sub ${ProjectName}
+
+  ParamMyKeyAlias:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: The alias for myKey
+      Name: '/mindLAMP-platform-v2/kms/key_alias'
+      Value: !Ref myKeyAlias
+      Type: String
+      Tags:
+        Project: !Sub ${ProjectName}
+
+Outputs:
+  KeyARN:
+    Description: The ARN for myKey
+    Value: !Ref myKey
+  KeyAlias:
+    Description: The Alias for myKey
+    Value: !Ref myKeyAlias
