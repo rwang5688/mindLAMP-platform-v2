@@ -10,5 +10,5 @@ aws cloudformation create-stack --stack-name mindLAMP-platform-v2-$1 \
 --template-body file://$MINDLAMP_PLATFORM_V2_SRC/mindLAMP-platform-v2-$1.yaml \
 --capabilities CAPABILITY_NAMED_IAM \
 --parameters file://mindLAMP-platform-v2-key-parameters.json \
---region $2
+--region $2 \
 --profile $3
