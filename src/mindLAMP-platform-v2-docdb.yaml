@@ -73,8 +73,10 @@ Resources:
       DeletionProtection: false
       EngineVersion: 4.0.0
       KmsKeyId: !Ref KMSKeyArn
-      MasterUsername: !Ref DBAdminUsername
-      MasterUserPassword: !Ref DBAdminUserPassword
+      MasterUsername:
+        Fn::Sub: "{{resolve:secretsmanager:${DBClusterSecret}::username}}"
+      MasterUserPassword:
+        Fn::Sub: "{{resolve:secretsmanager:${DBClusterSecret}::password}}"
       Port: 27017
       PreferredBackupWindow: 07:34-08:04
       PreferredMaintenanceWindow: sat:04:51-sat:05:21
@@ -130,6 +132,21 @@ Resources:
         - Key: Name
           Value: !Sub ${ProjectName}-docdb-instance
     DependsOn: DBCluster
+
+  DBClusterSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: ${ProjectName}-docdb-cluster secret
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "admin"}'
+        GenerateStringKey: password
+        PasswordLength: 16
+        ExcludeCharacters: "\"@/\\"
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-docdb-cluster-secret
 
   SecretDocDB:
     Type: 'AWS::SecretsManager::Secret'
