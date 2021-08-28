@@ -8,7 +8,7 @@ Parameters:
     ConstraintDescription: Project name that will be used as the prefix for all deployed resources
     Default: 'mindLAMP-platform-v2'
 
-  KMSKeyArn:
+  KmsKeyArn:
     Description: The key ARN for the KMS key used to encrypt the DocDB cluster at rest
     Type: AWS::SSM::Parameter::Value<String>
     Default: /mindLAMP-platform-v2/kms/key_arn
@@ -19,34 +19,19 @@ Parameters:
     Default: /mindLAMP-platform-v2/vpc/id
     
   PrivateSubnet1:
-    Description: The id for one of the two private subnets in the VPC where the DocDB cluster should be deployed
+    Description: The id for Private Subnet 1 in the VPC where the DocDB cluster should be deployed
     Type: AWS::SSM::Parameter::Value<String>
     Default: /mindLAMP-platform-v2/vpc/private_subnet_1
     
   PrivateSubnet2:
-    Description: The id for one of the two private subnets in the VPC where the DocDB cluster should be deployed
+    Description: The id for Private Subnet 2 in the VPC where the DocDB cluster should be deployed
     Type: AWS::SSM::Parameter::Value<String>
     Default: /mindLAMP-platform-v2/vpc/private_subnet_2
 
-  DBAdminUsername:
-    NoEcho: "true"
-    Description : "The database admin user name"
-    Type: "String"
-    MinLength: "1"
-    MaxLength: "16"
-    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
-    ConstraintDescription : "Must begin with a letter and contain only alphanumeric characters."
-    Default: "docdbadmin"
-
-  DBAdminUserPassword:
-    NoEcho: "true"
-    Description : "The database admin user password"
-    Type: "String"
-    MinLength: "1"
-    MaxLength: "41"
-    AllowedPattern : "[a-zA-Z0-9]+"
-    ConstraintDescription : "must contain only alphanumeric characters."
-    Default: "iamdocdbadmin"
+  PrivateSubnet3:
+    Description: The id for Private Subnet 3 in the VPC where the DocDB cluster should be deployed
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /mindLAMP-platform-v2/vpc/private_subnet_3
 
   DBInstanceClass:
     Description : "Instance class. Please refer to: https://docs.aws.amazon.com/documentdb/latest/developerguide/db-instance-classes.html#db-instance-classes-by-region"
@@ -60,7 +45,7 @@ Parameters:
       - db.r5.12xlarge
       - db.r5.24xlarge                             
     ConstraintDescription : "Instance type must be of the ones supported for the region. Please refer to: https://docs.aws.amazon.com/documentdb/latest/developerguide/db-instance-classes.html#db-instance-classes-by-region"
-    Default: "db.t3.medium"
+    Default: "db.r5.large"
 
 Resources:
   DBCluster:
@@ -113,6 +98,7 @@ Resources:
       SubnetIds:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2
+        - !Ref PrivateSubnet3
       Tags: 
         - Key: Project
           Value: !Sub ${ProjectName}
