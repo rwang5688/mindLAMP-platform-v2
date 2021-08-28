@@ -31,25 +31,30 @@ Parameters:
     Default: /mindLAMP-platform-v2/kms/key_arn
 
   VPC:
-    Description: The id for the VPC into which the DocDB cluster should be deployed
+    Description: The id for the VPC into which the EC2 cluster should be deployed
     Type: AWS::SSM::Parameter::Value<String>
     Default: /mindLAMP-platform-v2/vpc/id
     
   PublicSubnet1:
-    Description: The id for Public Subnet 1 in the VPC where the DocDB cluster should be deployed
+    Description: The id for Public Subnet 1 in the VPC where the EC2 cluster should be deployed
     Type: AWS::SSM::Parameter::Value<String>
     Default: /mindLAMP-platform-v2/vpc/public_subnet_1
 
   PublicSubnet2:
-    Description: The id for Public Subnet 2 in the VPC where the DocDB cluster should be deployed
+    Description: The id for Public Subnet 2 in the VPC where the EC2 cluster should be deployed
     Type: AWS::SSM::Parameter::Value<String>
     Default: /mindLAMP-platform-v2/vpc/public_subnet_2
 
   PublicSubnet3:
-    Description: The id for Public Subnet 3 in the VPC where the DocDB cluster should be deployed
+    Description: The id for Public Subnet 3 in the VPC where the EC2 cluster should be deployed
     Type: AWS::SSM::Parameter::Value<String>
     Default: /mindLAMP-platform-v2/vpc/public_subnet_3
-   
+
+  DocDBSecurityGroup:
+    Description: The id for the DocDB security group
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /mindLAMP-platform-v2/docdb/docdb_security_group
+
   DomainName:
     Description: Domain name
     Type: String
@@ -118,22 +123,22 @@ Resources:
         FromPort: 80
         ToPort: 80
         CidrIp: 0.0.0.0/0
-        Description: 'HTTP IPv4'
+        Description: HTTP IPv4
       - IpProtocol: tcp
         FromPort: 80
         ToPort: 80
         CidrIpv6: ::/0
-        Description: 'HTTP IPv6'
+        Description: HTTP IPv6
       - IpProtocol: tcp
         FromPort: 443
         ToPort: 443
         CidrIp: 0.0.0.0/0
-        Description: 'HTTPS IPv4'
+        Description: HTTPS IPv4
       - IpProtocol: tcp
         FromPort: 443
         ToPort: 443
         CidrIpv6: ::/0
-        Description: 'HTTPS IPv6'
+        Description: HTTPS IPv6
       Tags:
         - Key: Project
           Value: !Sub ${ProjectName}
@@ -149,7 +154,7 @@ Resources:
       FromPort: 2375
       ToPort: 2375
       SourceSecurityGroupId: !Ref EC2SecurityGroup
-      Description: 'Docker Daemon'
+      Description: Docker Daemon
 
   EC2SecurityGroupIngress04:
     Type: AWS::EC2::SecurityGroupIngress
@@ -160,7 +165,7 @@ Resources:
       FromPort: 2376
       ToPort: 2376
       SourceSecurityGroupId: !Ref EC2SecurityGroup
-      Description: 'Docker Machine'
+      Description: Docker Machine
 
   EC2SecurityGroupIngress05:
     Type: AWS::EC2::SecurityGroupIngress
@@ -171,7 +176,7 @@ Resources:
       FromPort: 2377
       ToPort: 2377
       SourceSecurityGroupId: !Ref EC2SecurityGroup
-      Description: 'Docker Swarm'
+      Description: Docker Swarm
 
   EC2SecurityGroupIngress06:
     Type: AWS::EC2::SecurityGroupIngress
@@ -182,7 +187,7 @@ Resources:
       FromPort: 7946
       ToPort: 7946
       SourceSecurityGroupId: !Ref EC2SecurityGroup
-      Description: 'Docker Swarm'
+      Description: Docker Swarm
 
   EC2SecurityGroupIngress07:
     Type: AWS::EC2::SecurityGroupIngress
@@ -193,7 +198,7 @@ Resources:
       FromPort: 7946
       ToPort: 7946
       SourceSecurityGroupId: !Ref EC2SecurityGroup
-      Description: 'Docker Swarm'
+      Description: Docker Swarm
 
   EC2SecurityGroupIngress08:
     Type: AWS::EC2::SecurityGroupIngress
@@ -204,7 +209,18 @@ Resources:
       FromPort: 4789
       ToPort: 4789
       SourceSecurityGroupId: !Ref EC2SecurityGroup
-      Description: 'Docker Overlay'
+      Description: Docker Overlay
+
+  DocDBSecurityGroupIngress01:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: 
+        Ref: DocDBSecurityGroup
+      IpProtocol: tcp
+      FromPort: 27017
+      ToPort: 27017
+      SourceSecurityGroupId: !Ref EC2SecurityGroup
+      Description: EC2 Security Group
 
   EC2InstanceRole:
     Type: AWS::IAM::Role
