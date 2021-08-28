@@ -28,7 +28,7 @@
         "ParameterValue": "10.192.21.0/24"
     },
     {
-        "ParameterKey": "PrivateSubne3CidrBlock",
+        "ParameterKey": "PrivateSubnet3CidrBlock",
         "ParameterValue": "10.192.22.0/24"
     }
 ]
