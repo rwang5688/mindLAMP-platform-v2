@@ -18,6 +18,12 @@ Parameters:
       - active-passive-100
       - active-passive-1000
     Default: 'active-passive-10'
+    
+  AmiId:
+    Description: The ID of the AMI.
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    ConstraintDescription: The ID of the AMI.
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
 
   KmsKeyArn:
     Description: The key ARN for the KMS key used to encrypt the DocDB cluster at rest
@@ -43,27 +49,21 @@ Parameters:
     Description: The id for Public Subnet 3 in the VPC where the DocDB cluster should be deployed
     Type: AWS::SSM::Parameter::Value<String>
     Default: /mindLAMP-platform-v2/vpc/public_subnet_3
-
-  AmiId:
-    Description: The ID of the AMI.
-    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
-    ConstraintDescription: The ID of the AMI.
-    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
-
-  KeyPair:
-    Description: SSH KeyPair Name
-    Type: 'AWS::EC2::KeyPair::KeyName'
-    ConstraintDescription: Provide the name of an existing SSH key pair
-
-  HostedZoneId:
-    Description: Hosted zone id
-    Type: String
-    ConstraintDescription: Hosted zone id
-
+   
   DomainName:
     Description: Domain name
     Type: String
     ConstraintDescription: Domain name
+
+  HostedZoneId:
+    Description: Hosted zone id
+    Type: String
+    ConstraintDescription: Hosted zone id    
+
+  KeyPair:
+    Description: SSH KeyPair Name
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    ConstraintDescription: The name of an existing key pair for SSH
 
 Mappings:
   ConfigurationMap:
