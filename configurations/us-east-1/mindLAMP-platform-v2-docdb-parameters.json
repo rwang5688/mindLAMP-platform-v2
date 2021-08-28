@@ -1,0 +1,11 @@
+[
+  {
+    "ParameterKey": "ProjectName",
+    "ParameterValue": "mindLAMP-platform-v2"
+  },
+  {
+    "ParameterKey": "DBInstanceClass",
+    "ParameterValue": "db.r5.large"
+  }
+]
+

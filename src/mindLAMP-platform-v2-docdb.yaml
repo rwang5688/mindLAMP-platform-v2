@@ -8,49 +8,30 @@ Parameters:
     ConstraintDescription: Project name that will be used as the prefix for all deployed resources
     Default: 'mindLAMP-platform-v2'
 
-  VPC:
-    Description: The id the VPC into which the RDS instance should be deployed
+  KmsKeyArn:
+    Description: The key ARN for the KMS key used to encrypt the DocDB cluster at rest
     Type: AWS::SSM::Parameter::Value<String>
-    Default: /s360/sim-on-prem/vpc/id
+    Default: /mindLAMP-platform-v2/kms/key_arn
+
+  VPC:
+    Description: The id for the VPC into which the DocDB cluster should be deployed
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /mindLAMP-platform-v2/vpc/id
     
   PrivateSubnet1:
-    Description: The id for one of the two private subnets in the VPC where the RDS instance should be deployed
+    Description: The id for Private Subnet 1 in the VPC where the DocDB cluster should be deployed
     Type: AWS::SSM::Parameter::Value<String>
-    Default: /s360/sim-on-prem/vpc/private_subnet_1
+    Default: /mindLAMP-platform-v2/vpc/private_subnet_1
     
   PrivateSubnet2:
-    Description: The id for one of the two private subnets in the VPC where the RDS instance should be deployed
+    Description: The id for Private Subnet 2 in the VPC where the DocDB cluster should be deployed
     Type: AWS::SSM::Parameter::Value<String>
-    Default: /s360/sim-on-prem/vpc/private_subnet_2
+    Default: /mindLAMP-platform-v2/vpc/private_subnet_2
 
-  DBAdminUsername:
-    NoEcho: "true"
-    Description : "The database admin account username"
-    Type: "String"
-    MinLength: "1"
-    MaxLength: "16"
-    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
-    ConstraintDescription : "Must begin with a letter and contain only alphanumeric characters."
-    Default: "docdbadmin"
-
-  DBAdminUserPassword:
-    NoEcho: "true"
-    Description : "The database admin account password"
-    Type: "String"
-    MinLength: "1"
-    MaxLength: "41"
-    AllowedPattern : "[a-zA-Z0-9]+"
-    ConstraintDescription : "must contain only alphanumeric characters."
-    Default: "iamdocdbadmin"
-
-  DBClusterName: 
-    Description : "Cluster name"
-    Type: "String"
-    MinLength: "1"
-    MaxLength: "64"
-    AllowedPattern : "[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*"
-    ConstraintDescription : "Must begin with a letter and contain only alphanumeric characters."
-    Default: "docdb-cluster"
+  PrivateSubnet3:
+    Description: The id for Private Subnet 3 in the VPC where the DocDB cluster should be deployed
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /mindLAMP-platform-v2/vpc/private_subnet_3
 
   DBInstanceClass:
     Description : "Instance class. Please refer to: https://docs.aws.amazon.com/documentdb/latest/developerguide/db-instance-classes.html#db-instance-classes-by-region"
@@ -64,35 +45,108 @@ Parameters:
       - db.r5.12xlarge
       - db.r5.24xlarge                             
     ConstraintDescription : "Instance type must be of the ones supported for the region. Please refer to: https://docs.aws.amazon.com/documentdb/latest/developerguide/db-instance-classes.html#db-instance-classes-by-region"
-    Default: "db.t3.medium"
-
-  DBInstanceName: 
-    Default: "MyInstance"
-    Description : "Instance name"
-    Type: "String"
-    MinLength: "1"
-    MaxLength: "64"
-    AllowedPattern : "[a-zA-Z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*"
-    ConstraintDescription : "Must begin with a letter and contain only alphanumeric characters."
-    Default: "docdb-instance"
+    Default: "db.r5.large"
 
 Resources:
   DBCluster:
-    Type: "AWS::DocDB::DBCluster"
-    DeletionPolicy: Delete
-    Properties:
-      DBClusterIdentifier: !Ref DBClusterName
-      MasterUsername: !Ref DBAdminUsername
-      MasterUserPassword: !Ref DBAdminUserPassword
+    Type: AWS::DocDB::DBCluster
+    Properties: 
+      BackupRetentionPeriod: 8
+      DBClusterIdentifier: !Sub ${ProjectName}-docdb-cluster
+      DBClusterParameterGroupName: !Ref DBClusterParameterGroup
+      DBSubnetGroupName: !Ref DBSubnetGrouop
+      DeletionProtection: false
       EngineVersion: 4.0.0
+      KmsKeyId: !Ref KMSKeyArn
+      MasterUsername:
+        Fn::Sub: "{{resolve:secretsmanager:${DBClusterSecret}::username}}"
+      MasterUserPassword:
+        Fn::Sub: "{{resolve:secretsmanager:${DBClusterSecret}::password}}"
+      Port: 27017
+      PreferredBackupWindow: 07:34-08:04
+      PreferredMaintenanceWindow: sat:04:51-sat:05:21
+      SnapshotIdentifier: !Sub ${ProjectName}-docdb-cluster-snapshot-id
+      StorageEncrypted: true
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-docdb-cluster
+      VpcSecurityGroupIds: 
+        - String
+
+  DBClusterParameterGroup:
+    Type: AWS::DocDB::DBClusterParameterGroup
+    Properties: 
+      Description: !Sub Parameter group for ${ProjectName}-docdb-cluster 
+      Family: docdb3.6
+      Name: !Sub ${ProjectName}-docdb-cluster-parameter-group
+      Parameters:
+            audit_logs: disabled
+            tls: enabled
+            ttl_monitor: enabled
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-docdb-cluster-parameter-group
+  
+  DBSubnetGroup: 
+    Type: "AWS::DocDB::DBSubnetGroup"
+    Properties: 
+      DBSubnetGroupDescription: Subnet group for ${ProjectName}-docdb-cluster
+      SubnetIds:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+        - !Ref PrivateSubnet3
+      Tags: 
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-docdb-subnet-group
 
   DBInstance:
     Type: "AWS::DocDB::DBInstance"
     Properties:
       DBClusterIdentifier: !Ref DBCluster
-      DBInstanceIdentifier: !Ref DBInstanceName
       DBInstanceClass: !Ref DBInstanceClass
+      DBInstanceIdentifier: !Sub ${ProjectName}-docdb-instance
+      PreferredMaintenanceWindow: sat:06:54-sat:07:24
+      Tags: 
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-docdb-instance
     DependsOn: DBCluster
+
+  DBClusterSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: ${ProjectName}-docdb-cluster secret
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "admin"}'
+        GenerateStringKey: password
+        PasswordLength: 16
+        ExcludeCharacters: "\"@/\\"
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-docdb-cluster-secret
+
+  SecretDocDB:
+    Type: 'AWS::SecretsManager::Secret'
+    Properties:
+      Name: "/s360/demoSISDB/credentials"
+      Description: "Secrets to provide access to s360-sisdb-mysql RDS instance"
+      SecretString: '{"username":"admin","password":"master123"}'
+  
+  SecretRDSInstanceAttachment:
+    Type: "AWS::SecretsManager::SecretTargetAttachment"
+    Properties:
+      SecretId: !Ref MyRDSSecret
+      TargetId: !Ref rdssisdemodb
+      TargetType: AWS::RDS::DBInstance
 
 Outputs:
   ClusterId:

@@ -84,7 +84,7 @@ Resources:
       AliasName: !Sub alias/${ProjectName}-${KeyAliasNameSuffix}
       TargetKeyId: !Ref myKey
 
-  ParamMyKey:
+  ParamMyKeyArn:
     Type: AWS::SSM::Parameter
     Properties:
       Description: The ARN for myKey
@@ -105,7 +105,7 @@ Resources:
         Project: !Sub ${ProjectName}
 
 Outputs:
-  KeyARN:
+  KeyArn:
     Description: The ARN for myKey
     Value: !Ref myKey
   KeyAlias:

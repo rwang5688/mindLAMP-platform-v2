@@ -5,10 +5,10 @@ export MINDLAMP_PLATFORM_V2_SRC=$MINDLAMP_PLATFORM_V2_HOME/src
 echo "MINDLAMP_PLATFORM_V2_SRC=$MINDLAMP_PLATFORM_V2_SRC"
 
 # execute
-echo "create-mindLAMP-platform-key in region=$1"
-aws cloudformation create-stack --stack-name mindLAMP-platform-v2-key \
---template-body file://$MINDLAMP_PLATFORM_V2_SRC/mindLAMP-platform-v2-key.yaml \
+echo "create-mindLAMP-platform-component=$1 in region=$2 and profile=$3"
+aws cloudformation create-stack --stack-name mindLAMP-platform-v2-$1 \
+--template-body file://$MINDLAMP_PLATFORM_V2_SRC/mindLAMP-platform-v2-$1.yaml \
 --capabilities CAPABILITY_NAMED_IAM \
 --parameters file://mindLAMP-platform-v2-key-parameters.json \
---region $1
-
+--region $2
+--profile $3
