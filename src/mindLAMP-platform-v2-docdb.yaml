@@ -48,20 +48,43 @@ Parameters:
     Default: "db.r5.large"
 
 Resources:
-  DBCluster:
+  DocDBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId:
+        Ref: VPC
+      GroupName: !Sub ${ProjectName}-docdb-sg
+      GroupDescription: !Sub ${ProjectName} DocDB security group
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-docdb-sg
+
+  ParamDocDBSecurityGroup:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: The ARN for myKey
+      Name: '/mindLAMP-platform-v2/kms/key_arn'
+      Value: !Ref myKey
+      Type: String
+      Tags:
+        Project: !Sub ${ProjectName}
+
+  DocDBCluster:
     Type: AWS::DocDB::DBCluster
     Properties: 
       BackupRetentionPeriod: 8
       DBClusterIdentifier: !Sub ${ProjectName}-docdb-cluster
       DBClusterParameterGroupName: !Ref DBClusterParameterGroup
-      DBSubnetGroupName: !Ref DBSubnetGrouop
+      DBSubnetGroupName: !Ref DocDBSubnetGrouop
       DeletionProtection: false
       EngineVersion: 4.0.0
-      KmsKeyId: !Ref KMSKeyArn
+      KmsKeyId: !Ref KmsKeyArn
       MasterUsername:
-        Fn::Sub: "{{resolve:secretsmanager:${DBClusterSecret}::username}}"
+        Fn::Sub: "{{resolve:secretsmanager:${DocDBClusterSecret}::username}}"
       MasterUserPassword:
-        Fn::Sub: "{{resolve:secretsmanager:${DBClusterSecret}::password}}"
+        Fn::Sub: "{{resolve:secretsmanager:${DocDBClusterSecret}::password}}"
       Port: 27017
       PreferredBackupWindow: 07:34-08:04
       PreferredMaintenanceWindow: sat:04:51-sat:05:21
@@ -90,20 +113,6 @@ Resources:
           Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-docdb-cluster-parameter-group
-  
-  DBSubnetGroup: 
-    Type: "AWS::DocDB::DBSubnetGroup"
-    Properties: 
-      DBSubnetGroupDescription: Subnet group for ${ProjectName}-docdb-cluster
-      SubnetIds:
-        - !Ref PrivateSubnet1
-        - !Ref PrivateSubnet2
-        - !Ref PrivateSubnet3
-      Tags: 
-        - Key: Project
-          Value: !Sub ${ProjectName}
-        - Key: Name
-          Value: !Sub ${ProjectName}-docdb-subnet-group
 
   DBInstance:
     Type: "AWS::DocDB::DBInstance"
@@ -117,7 +126,21 @@ Resources:
           Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-docdb-instance
-    DependsOn: DBCluster
+    DependsOn: DBCluster  
+
+  DBSubnetGroup: 
+    Type: "AWS::DocDB::DBSubnetGroup"
+    Properties: 
+      DBSubnetGroupDescription: Subnet group for ${ProjectName}-docdb-cluster
+      SubnetIds:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+        - !Ref PrivateSubnet3
+      Tags: 
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-docdb-subnet-group
 
   DBClusterSecret:
     Type: AWS::SecretsManager::Secret

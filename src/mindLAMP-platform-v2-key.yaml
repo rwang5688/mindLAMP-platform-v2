@@ -14,7 +14,7 @@ Parameters:
     Default: 'key'
 
 Resources:
-  myKey:
+  KmsKey:
     Type: AWS::KMS::Key
     Properties:
       Description: An example symmetric CMK
@@ -78,36 +78,36 @@ Resources:
         - Key: Name
           Value: !Sub ${ProjectName}-${KeyAliasNameSuffix}
 
-  myKeyAlias:
+  KmsKeyAlias:
     Type: 'AWS::KMS::Alias'
     Properties:
       AliasName: !Sub alias/${ProjectName}-${KeyAliasNameSuffix}
-      TargetKeyId: !Ref myKey
+      TargetKeyId: !Ref KmsKey
 
-  ParamMyKeyArn:
+  ParamKeyArn:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: The ARN for myKey
+      Description: The ARN for KmsKey
       Name: '/mindLAMP-platform-v2/kms/key_arn'
-      Value: !Ref myKey
+      Value: !Ref KmsKey
       Type: String
       Tags:
         Project: !Sub ${ProjectName}
 
-  ParamMyKeyAlias:
+  ParamKeyAlias:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: The alias for myKey
+      Description: The alias for KmsKey
       Name: '/mindLAMP-platform-v2/kms/key_alias'
-      Value: !Ref myKeyAlias
+      Value: !Ref KmsKeyAlias
       Type: String
       Tags:
         Project: !Sub ${ProjectName}
 
 Outputs:
   KeyArn:
-    Description: The ARN for myKey
-    Value: !Ref myKey
+    Description: The ARN for KmsKey
+    Value: !Ref KmsKey
   KeyAlias:
-    Description: The Alias for myKey
-    Value: !Ref myKeyAlias
+    Description: The Alias for KmsKey
+    Value: !Ref KmsKeyAlias
