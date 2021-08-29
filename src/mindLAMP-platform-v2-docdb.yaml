@@ -67,7 +67,7 @@ Resources:
       BackupRetentionPeriod: 8
       DBClusterIdentifier: !Sub ${ProjectName}-docdb-cluster
       DBClusterParameterGroupName: !Ref DocDBClusterParameterGroup
-      DBSubnetGroupName: !Ref DocDBSubnetGrouop
+      DBSubnetGroupName: !Ref DocDBSubnetGroup
       DeletionProtection: false
       EngineVersion: 4.0.0
       KmsKeyId: !Ref KmsKeyArn
@@ -200,7 +200,7 @@ Resources:
         ExcludeCharacters: "\"@/\\"
         GenerateStringKey: password
         PasswordLength: 16
-        SecretStringTemplate: '{\"username\": \"docdbadmin\",\"ssl\": true}'
+        SecretStringTemplate: '{"username": "docdbadmin","ssl": true}'
       Tags:
         - Key: Project
           Value: !Sub ${ProjectName}
@@ -235,17 +235,17 @@ Resources:
 
 Outputs:
   DocDBClusterEndpoint:
-    Description: 
+    Description: DocDB cluster endpoint
     Value: !GetAtt DocDBCluster.Endpoint
 
   DocDBClusterId:
+    Description: DocDB cluster id
     Value: !Ref DocDBCluster
 
   DocDBClusterPort:
+    Description: DocDB cluster port
     Value: !GetAtt DocDBCluster.Port
 
-  DocDBEngineVersion:
-    Value: "4.0.0"
-
   DocDBSecurityGroupId:
+    Description: DocDB security group
     Value: !Ref DocDBSecurityGroup
