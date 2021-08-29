@@ -11,7 +11,22 @@ Parameters:
 
   KmsKeyArn:
     Default: /mindLAMP-platform-v2/kms/key_arn
-    Description: The key ARN for the KMS key used to encrypt the DocDB cluster at rest
+    Description: The key ARN for the KMS key used to encrypt all project resources at rest
+    Type: AWS::SSM::Parameter::Value<String>
+
+  PrivateSubnet1:
+    Default: /mindLAMP-platform-v2/vpc/private_subnet_1
+    Description: The id for Private Subnet 1 in the VPC where the DocDB cluster should be deployed
+    Type: AWS::SSM::Parameter::Value<String>
+
+  PrivateSubnet2:
+    Default: /mindLAMP-platform-v2/vpc/private_subnet_2
+    Description: The id for Private Subnet 2 in the VPC where the DocDB cluster should be deployed
+    Type: AWS::SSM::Parameter::Value<String>
+
+  PrivateSubnet3:
+    Default: /mindLAMP-platform-v2/vpc/private_subnet_3
+    Description: The id for Private Subnet 3 in the VPC where the DocDB cluster should be deployed
     Type: AWS::SSM::Parameter::Value<String>
 
   VPC:
@@ -19,24 +34,7 @@ Parameters:
     Description: The id for the VPC into which the DocDB cluster should be deployed
     Type: AWS::SSM::Parameter::Value<String>
 
-  PrivateSubnet1:
-    Description: The id for Private Subnet 1 in the VPC where the DocDB cluster should be deployed
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: /mindLAMP-platform-v2/vpc/private_subnet_1
-    
-  PrivateSubnet2:
-    Description: The id for Private Subnet 2 in the VPC where the DocDB cluster should be deployed
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: /mindLAMP-platform-v2/vpc/private_subnet_2
-
-  PrivateSubnet3:
-    Description: The id for Private Subnet 3 in the VPC where the DocDB cluster should be deployed
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: /mindLAMP-platform-v2/vpc/private_subnet_3
-
   DocDBInstanceClass:
-    Description : DocDB instance class options.
-    Type: String
     AllowedValues:
       - db.t3.medium
       - db.r5.large
@@ -47,20 +45,21 @@ Parameters:
       - db.r5.24xlarge                             
     ConstraintDescription : DocDB instance class options.
     Default: db.r5.large
+    Description : DocDB instance class options.
+    Type: String
 
 Resources:
   DocDBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      VpcId:
-        Ref: VPC
-      GroupName: !Sub ${ProjectName}-docdb-sg
       GroupDescription: !Sub ${ProjectName} DocDB security group
+      GroupName: !Sub ${ProjectName}-docdb-sg
       Tags:
         - Key: Project
           Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-docdb-sg
+      VpcId: !Ref VPC
 
   DocDBCluster:
     Type: AWS::DocDB::DBCluster
@@ -73,9 +72,9 @@ Resources:
       EngineVersion: 4.0.0
       KmsKeyId: !Ref KmsKeyArn
       MasterUsername:
-        Fn::Sub: {{resolve:secretsmanager:${DocDBClusterSecret}::username}}
+        Fn::Sub: '{{resolve:secretsmanager:${DocDBClusterSecret}::username}}'
       MasterUserPassword:
-        Fn::Sub: {{resolve:secretsmanager:${DocDBClusterSecret}::password}}
+        Fn::Sub: '{{resolve:secretsmanager:${DocDBClusterSecret}::password}}'
       Port: 27017
       PreferredBackupWindow: 07:34-08:04
       PreferredMaintenanceWindow: sat:04:51-sat:05:21
@@ -107,6 +106,7 @@ Resources:
 
   DocDBInstance:
     Type: AWS::DocDB::DBInstance
+    DependsOn: DocDBCluster
     Properties:
       DBClusterIdentifier: !Ref DocDBCluster
       DBInstanceClass: !Ref DocDBInstanceClass
@@ -117,7 +117,6 @@ Resources:
           Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-docdb-instance
-    DependsOn: DocDBCluster  
 
   DocDBSubnetGroup: 
     Type: AWS::DocDB::DBSubnetGroup
@@ -133,15 +132,45 @@ Resources:
         - Key: Name
           Value: !Sub ${ProjectName}-docdb-subnet-group
 
+  ParamDocDBClusterEndpoint:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: DocDB cluster endpoint
+      Name: /mindLAMP-platform-v2/docdb/docdb_cluster_endpoint
+      Tags:
+        Project: !Sub ${ProjectName}
+      Type: String
+      Value: !GetAtt DocDBCluster.Endpoint
+
+  ParamDocDBClusterId:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: DocDB cluster id
+      Name: /mindLAMP-platform-v2/docdb/docdb_cluster_id
+      Tags:
+        Project: !Sub ${ProjectName}
+      Type: String
+      Value: !Ref DocDBCluster
+
+  ParamDocDBClusterPort:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: DocDB cluster port
+      Name: /mindLAMP-platform-v2/docdb/docdb_cluster_port
+      Tags:
+        Project: !Sub ${ProjectName}
+      Type: String
+      Value: !GetAtt DocDBCluster.Port
+
   ParamDocDBSecurityGroup:
     Type: AWS::SSM::Parameter
     Properties:
       Description: DocDB security group id
       Name: /mindLAMP-platform-v2/docdb/docdb_security_group
-      Value: !Ref DocDBSecurityGroup
-      Type: String
       Tags:
         Project: !Sub ${ProjectName}
+      Type: String
+      Value: !Ref DocDBSecurityGroup
 
   SecretsManagerVPCEndpoint:
     Type: AWS::EC2::VPCEndpoint
@@ -161,40 +190,62 @@ Resources:
         - Key: Name
           Value: !Sub ${ProjectName}-secrets-manager-vpce
       VpcEndpointType: Interface
-      VpcId:
-        Ref: VPC
+      VpcId: !Ref VPC
 
   DocDBClusterSecret:
     Type: AWS::SecretsManager::Secret
     Properties:
       Description: ${ProjectName}-docdb-cluster secret
       GenerateSecretString:
-        SecretStringTemplate: '{\"username\": \"docdbadmin\",\"ssl\": true}'
+        ExcludeCharacters: "\"@/\\"
         GenerateStringKey: password
         PasswordLength: 16
-        ExcludeCharacters: "\"@/\\"
+        SecretStringTemplate: '{\"username\": \"docdbadmin\",\"ssl\": true}'
       Tags:
         - Key: Project
           Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-docdb-cluster-secret
 
-  SecretDocDBClusterAttachment:
+  DocDBClusterSecretTargetAttachment:
     Type: AWS::SecretsManager::SecretTargetAttachment
     Properties:
-      SecretId:
-        Ref: MyDocDBClusterRotationSecret
-      TargetId:
-        Ref: MyDocDBCluster
+      SecretId: !Ref DocDBClusterSecret
+      TargetId: !Ref DocDBCluster
       TargetType: AWS::DocDB::DBCluster
 
+  DocDBClusterSecretRotationSchedule:
+    Type: AWS::SecretsManager::RotationSchedule
+    DependsOn: DocDBClusterSecretTargetAttachment
+    Properties:
+      SecretId: !Ref DocDBClusterSecret
+      HostedRotationLambda:
+        RotationType: MongoDBSingleUser
+        RotationLambdaName: MongoDBSingleUser
+        VpcSecurityGroupIds:
+          - !Ref DocDBSecurityGroup
+        VpcSubnetIds:
+          Fn::Join:
+          - ","
+          - - !Ref PrivateSubnet1
+            - !Ref PrivateSubnet2
+            - !Ref PrivateSubnet3
+      RotationRules:
+        AutomaticallyAfterDays: 30
+
 Outputs:
-  ClusterId:
-    Value: !Ref DBCluster
-  ClusterEndpoint:
-    Value: !GetAtt DBCluster.Endpoint
-  ClusterPort:
-    Value: !GetAtt DBCluster.Port
-  EngineVersion:
+  DocDBClusterEndpoint:
+    Description: 
+    Value: !GetAtt DocDBCluster.Endpoint
+
+  DocDBClusterId:
+    Value: !Ref DocDBCluster
+
+  DocDBClusterPort:
+    Value: !GetAtt DocDBCluster.Port
+
+  DocDBEngineVersion:
     Value: "4.0.0"
 
+  DocDBSecurityGroupId:
+    Value: !Ref DocDBSecurityGroup
