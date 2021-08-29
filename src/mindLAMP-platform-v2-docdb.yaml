@@ -91,7 +91,7 @@ Resources:
     Type: AWS::DocDB::DBClusterParameterGroup
     Properties: 
       Description: !Sub Parameter group for ${ProjectName}-docdb-cluster 
-      Family: docdb3.6
+      Family: docdb4.0
       Name: !Sub ${ProjectName}-docdb-cluster-parameter-group
       Parameters:
             audit_logs: disabled
