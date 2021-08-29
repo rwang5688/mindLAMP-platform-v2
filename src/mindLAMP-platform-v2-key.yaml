@@ -30,10 +30,10 @@ Resources:
           Principal:
             AWS: !Join
               - ''
-              - - arn:aws:iam::
+              - - 'arn:aws:iam::'
                 - !Ref AWS::AccountId
                 - :root
-          Resource: *
+          Resource: '*'
         - Sid: Allow administration of the key
           Action:
             - kms:Create*
@@ -52,10 +52,10 @@ Resources:
           Principal:
             AWS: !Join
               - ''
-              - - arn:aws:iam::
+              - - 'arn:aws:iam::'
                 - !Ref AWS::AccountId
                 - :role/Admin
-          Resource: *
+          Resource: '*'
         - Sid: Allow use of the key
           Action:
             - kms:DescribeKey
@@ -68,10 +68,10 @@ Resources:
           Principal:
             AWS: !Join
               - ''
-              - - arn:aws:iam::
+              - - 'arn:aws:iam::'
                 - !Ref AWS::AccountId
                 - :role/Admin
-          Resource: *
+          Resource: '*'
       PendingWindowInDays: 7
       Tags:
         - Key: Project
