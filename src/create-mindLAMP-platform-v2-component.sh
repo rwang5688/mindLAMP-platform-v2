@@ -9,6 +9,6 @@ echo "create-mindLAMP-platform-component=$1 in region=$2 and profile=$3"
 aws cloudformation create-stack --stack-name mindLAMP-platform-v2-$1 \
 --template-body file://$MINDLAMP_PLATFORM_V2_SRC/mindLAMP-platform-v2-$1.yaml \
 --capabilities CAPABILITY_NAMED_IAM \
---parameters file://mindLAMP-platform-v2-key-parameters.json \
+--parameters file://mindLAMP-platform-v2-$1-parameters.json \
 --region $2 \
 --profile $3
