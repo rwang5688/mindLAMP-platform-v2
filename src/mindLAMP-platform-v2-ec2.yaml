@@ -276,7 +276,7 @@ Resources:
       KeyName: !Ref KeyPair
       SecurityGroupIds:
         - Ref: EC2SecurityGroup
-      SubnetId: !Ref PublicSubnet01
+      SubnetId: !Ref PublicSubnet1
       Tags:
         - Key: Project
           Value: !Sub ${ProjectName}
@@ -360,7 +360,7 @@ Resources:
       KeyName: !Ref KeyPair
       SecurityGroupIds:
         - Ref: EC2SecurityGroup
-      SubnetId: !Ref PublicSubnet02
+      SubnetId: !Ref PublicSubnet2
       Tags:
         - Key: Project
           Value: !Sub ${ProjectName}
@@ -444,7 +444,7 @@ Resources:
       KeyName: !Ref KeyPair
       SecurityGroupIds:
         - Ref: EC2SecurityGroup
-      SubnetId: !Ref PublicSubnet03
+      SubnetId: !Ref PublicSubnet3
       Tags:
         - Key: Project
           Value: !Sub ${ProjectName}
@@ -528,7 +528,7 @@ Resources:
       KeyName: !Ref KeyPair
       SecurityGroupIds:
         - Ref: EC2SecurityGroup
-      SubnetId: !Ref PublicSubnet02
+      SubnetId: !Ref PublicSubnet2
       Tags:
         - Key: Project
           Value: !Sub ${ProjectName}
