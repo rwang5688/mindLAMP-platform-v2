@@ -592,7 +592,7 @@ Resources:
         - Key: Project
           Value: !Sub ${ProjectName}
         - Key: Name
-          Value: !Sub ${ProjectName}-ec2-instance-eip-01
+          Value: !Sub ${ProjectName}-ec2-instance-01-eip
 
   EIP02:
     Type: AWS::EC2::EIP
@@ -603,7 +603,7 @@ Resources:
         - Key: Project
           Value: !Sub ${ProjectName}
         - Key: Name
-          Value: !Sub ${ProjectName}-ec2-instance-eip-02
+          Value: !Sub ${ProjectName}-ec2-instance-02-eip
 
   EIP03:
     Type: AWS::EC2::EIP
@@ -614,7 +614,7 @@ Resources:
         - Key: Project
           Value: !Sub ${ProjectName}
         - Key: Name
-          Value: !Sub ${ProjectName}-ec2-instance-eip-03
+          Value: !Sub ${ProjectName}-ec2-instance-03-eip
 
   EIP04:
     Type: AWS::EC2::EIP
@@ -625,7 +625,7 @@ Resources:
         - Key: Project
           Value: !Sub ${ProjectName}
         - Key: Name
-          Value: !Sub ${ProjectName}-ec2-instance-eip-04
+          Value: !Sub ${ProjectName}-ec2-instance-04-eip
 
   DNSEntries01:
     Type: AWS::Route53::RecordSetGroup
