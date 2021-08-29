@@ -3,75 +3,76 @@ Description: mindLAMP Platform v2 KMS key setup
 
 Parameters:
   ProjectName:
+    ConstraintDescription: Project name that will be used as the prefix for all deployed resources
+    Default: mindLAMP-platform-v2
     Description: Project name that will be used as the prefix for all deployed resources
     Type: String
-    ConstraintDescription: Project name that will be used as the prefix for all deployed resources
-    Default: 'mindLAMP-platform-v2'
+
   KeyAliasNameSuffix:
+    ConstraintDescription: Suffix for the CMK key alias name; prefix is ${ProjectName}
+    Default: key
     Description: Suffix for the CMK key alias name; prefix is ${ProjectName}
     Type: String
-    ConstraintDescription: Suffix for the CMK key alias name; prefix is ${ProjectName}
-    Default: 'key'
 
 Resources:
   KmsKey:
     Type: AWS::KMS::Key
     Properties:
-      Description: An example symmetric CMK
+      Description: Symmetric CMK for encrypting all project resources at rest
       EnableKeyRotation: true
-      PendingWindowInDays: 20
       KeyPolicy:
-        Version: '2012-10-17'
-        Id: key-default-1
+        Version: 2012-10-17
+        Id: kms-key-policy
         Statement:
         - Sid: Enable IAM User Permissions
-          Effect: Allow
-          Principal:
-            AWS: !Join
-              - ''
-              - - 'arn:aws:iam::'
-                - !Ref AWS::AccountId
-                - ':root'
           Action: kms:*
-          Resource: '*'
+          Effect: Allow
+          Principal:
+            AWS: !Join
+              - ''
+              - - arn:aws:iam::
+                - !Ref AWS::AccountId
+                - :root
+          Resource: *
         - Sid: Allow administration of the key
+          Action:
+            - kms:Create*
+            - kms:Describe*
+            - kms:Enable*
+            - kms:List*
+            - kms:Put*
+            - kms:Update*
+            - kms:Revoke*
+            - kms:Disable*
+            - kms:Get*
+            - kms:Delete*
+            - kms:ScheduleKeyDeletion
+            - kms:CancelKeyDeletion
           Effect: Allow
           Principal:
             AWS: !Join
               - ''
-              - - 'arn:aws:iam::'
+              - - arn:aws:iam::
                 - !Ref AWS::AccountId
-                - ':role/Admin'
-          Action:
-          - kms:Create*
-          - kms:Describe*
-          - kms:Enable*
-          - kms:List*
-          - kms:Put*
-          - kms:Update*
-          - kms:Revoke*
-          - kms:Disable*
-          - kms:Get*
-          - kms:Delete*
-          - kms:ScheduleKeyDeletion
-          - kms:CancelKeyDeletion
-          Resource: '*'
+                - :role/Admin
+          Resource: *
         - Sid: Allow use of the key
+          Action:
+            - kms:DescribeKey
+            - kms:Encrypt
+            - kms:Decrypt
+            - kms:ReEncrypt*
+            - kms:GenerateDataKey
+            - kms:GenerateDataKeyWithoutPlaintext
           Effect: Allow
           Principal:
             AWS: !Join
               - ''
-              - - 'arn:aws:iam::'
+              - - arn:aws:iam::
                 - !Ref AWS::AccountId
-                - ':role/Admin'
-          Action:
-          - kms:DescribeKey
-          - kms:Encrypt
-          - kms:Decrypt
-          - kms:ReEncrypt*
-          - kms:GenerateDataKey
-          - kms:GenerateDataKeyWithoutPlaintext
-          Resource: '*'
+                - :role/Admin
+          Resource: *
+      PendingWindowInDays: 7
       Tags:
         - Key: Project
           Value: !Sub ${ProjectName}
@@ -79,7 +80,7 @@ Resources:
           Value: !Sub ${ProjectName}-${KeyAliasNameSuffix}
 
   KmsKeyAlias:
-    Type: 'AWS::KMS::Alias'
+    Type: AWS::KMS::Alias
     Properties:
       AliasName: !Sub alias/${ProjectName}-${KeyAliasNameSuffix}
       TargetKeyId: !Ref KmsKey
@@ -88,26 +89,27 @@ Resources:
     Type: AWS::SSM::Parameter
     Properties:
       Description: The ARN for KmsKey
-      Name: '/mindLAMP-platform-v2/kms/key_arn'
-      Value: !Ref KmsKey
-      Type: String
+      Name: /mindLAMP-platform-v2/kms/key_arn
       Tags:
         Project: !Sub ${ProjectName}
+      Type: String
+      Value: !Ref KmsKey
 
   ParamKeyAlias:
     Type: AWS::SSM::Parameter
     Properties:
       Description: The alias for KmsKey
-      Name: '/mindLAMP-platform-v2/kms/key_alias'
-      Value: !Ref KmsKeyAlias
-      Type: String
+      Name: /mindLAMP-platform-v2/kms/key_alias
       Tags:
         Project: !Sub ${ProjectName}
+      Type: String
+      Value: !Ref KmsKeyAlias
 
 Outputs:
   KeyArn:
     Description: The ARN for KmsKey
     Value: !Ref KmsKey
+
   KeyAlias:
     Description: The Alias for KmsKey
     Value: !Ref KmsKeyAlias

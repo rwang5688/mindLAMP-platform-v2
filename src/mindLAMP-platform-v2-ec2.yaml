@@ -6,7 +6,7 @@ Parameters:
     Description: Project name that will be used as the prefix for all deployed resources
     Type: String
     ConstraintDescription: Project name that will be used as the prefix for all deployed resources
-    Default: 'mindLAMP-platform-v2'
+    Default: mindLAMP-platform-v2
 
   Configuration:
     Description: Configuration that will be deployed
@@ -17,13 +17,18 @@ Parameters:
       - active-passive-10
       - active-passive-100
       - active-passive-1000
-    Default: 'active-passive-10'
-    
+    Default: active-passive-10
+
   AmiId:
     Description: The ID of the AMI.
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     ConstraintDescription: The ID of the AMI.
-    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+
+  DocDBSecurityGroup:
+    Description: The id for the DocDB security group
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /mindLAMP-platform-v2/docdb/docdb_security_group
 
   KmsKeyArn:
     Description: The key ARN for the KMS key used to encrypt the DocDB cluster at rest
@@ -49,11 +54,6 @@ Parameters:
     Description: The id for Public Subnet 3 in the VPC where the EC2 cluster should be deployed
     Type: AWS::SSM::Parameter::Value<String>
     Default: /mindLAMP-platform-v2/vpc/public_subnet_3
-
-  DocDBSecurityGroup:
-    Description: The id for the DocDB security group
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: /mindLAMP-platform-v2/docdb/docdb_security_group
 
   DomainName:
     Description: Domain name

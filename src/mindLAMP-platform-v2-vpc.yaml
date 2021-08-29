@@ -3,60 +3,67 @@ Description: mindLAMP Platform v2 VPC networking setup
 
 Parameters:
   ProjectName:
+    ConstraintDescription: Project name that will be used as the prefix for all deployed resources
+    Default: mindLAMP-platform-v2
     Description: Project name that will be used as the prefix for all deployed resources
     Type: String
-    ConstraintDescription: Project name that will be used as the prefix for all deployed resources
-    Default: 'mindLAMP-platform-v2'
-  VpcCidrBlock:
-    Description: VPC CIDR Block
-    Type: String
-    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
-    ConstraintDescription: VPC CIDR Block
-    Default: 10.192.0.0/16
-  PublicSubnet1CidrBlock:
-    Description: Public Subnet 1 CIDR Block
-    Type: String
-    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
-    ConstraintDescription: Public Subnet 1 CIDR Block
-    Default: 10.192.10.0/24
-  PublicSubnet2CidrBlock:
-    Description: Public Subnet 2 CIDR Block
-    Type: String
-    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
-    ConstraintDescription: Public Subnet 2 CIDR Block
-    Default: 10.192.11.0/24
-  PublicSubnet3CidrBlock:
-    Description: Public Subnet 3 CIDR Block
-    Type: String
-    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
-    ConstraintDescription: Public Subnet 3 CIDR Block
-    Default: 10.192.12.0/24
+
   PrivateSubnet1CidrBlock:
-    Description: Private Subnet 1 CIDR Block
-    Type: String
-    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
     ConstraintDescription: Private Subnet 1 CIDR Block
     Default: 10.192.20.0/24
-  PrivateSubnet2CidrBlock:
-    Description: Private Subnet 2 CIDR Block
+    Description: Private Subnet 1 CIDR Block
     Type: String
-    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
+
+  PrivateSubnet2CidrBlock:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
     ConstraintDescription: Private Subnet 2 CIDR Block
     Default: 10.192.21.0/24
-  PrivateSubnet3CidrBlock:
-    Description: Private Subnet 3 CIDR Block
+    Description: Private Subnet 2 CIDR Block
     Type: String
-    AllowedPattern: '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$'
+
+  PrivateSubnet3CidrBlock:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
     ConstraintDescription: Private Subnet 3 CIDR Block
     Default: 10.192.22.0/24
+    Description: Private Subnet 3 CIDR Block
+    Type: String
+
+  PublicSubnet1CidrBlock:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
+    ConstraintDescription: Public Subnet 1 CIDR Block
+    Default: 10.192.10.0/24
+    Description: Public Subnet 1 CIDR Block
+    Type: String
+
+  PublicSubnet2CidrBlock:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
+    ConstraintDescription: Public Subnet 2 CIDR Block
+    Default: 10.192.11.0/24
+    Description: Public Subnet 2 CIDR Block
+    Type: String
+
+  PublicSubnet3CidrBlock:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
+    ConstraintDescription: Public Subnet 3 CIDR Block
+    Default: 10.192.12.0/24
+    Description: Public Subnet 3 CIDR Block
+    Type: String
+
+  VpcCidrBlock:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
+    ConstraintDescription: VPC CIDR Block
+    Default: 10.192.0.0/16
+    Description: VPC CIDR Block
+    Type: String
 
 Resources:
   VPC:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: !Ref VpcCidrBlock
-      EnableDnsSupport: true
       EnableDnsHostnames: true
+      EnableDnsSupport: true
       Tags:
         - Key: Project
           Value: !Sub ${ProjectName}
@@ -78,53 +85,9 @@ Resources:
       InternetGatewayId: !Ref InternetGateway
       VpcId: !Ref VPC
 
-  PublicSubnet1:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref VPC
-      AvailabilityZone: !Select [ 0, !GetAZs '' ]
-      CidrBlock: !Ref PublicSubnet1CidrBlock
-      MapPublicIpOnLaunch: true
-      Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
-        - Key: Name
-          Value: !Sub ${ProjectName}-public-subnet-1
-  
-  PublicSubnet2:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId:
-      VpcId: !Ref VPC
-      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
-      CidrBlock: !Ref PublicSubnet2CidrBlock
-      MapPublicIpOnLaunch: false
-      MapPublicIpOnLaunch: 'True'
-      Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
-        - Key: Name
-          Value: !Sub ${ProjectName}-public-subnet-2
-
-  PublicSubnet3:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId:
-      VpcId: !Ref VPC
-      AvailabilityZone: !Select [ 2, !GetAZs  '' ]
-      CidrBlock: !Ref PublicSubnet3CidrBlock
-      MapPublicIpOnLaunch: false
-      MapPublicIpOnLaunch: 'True'
-      Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
-        - Key: Name
-          Value: !Sub ${ProjectName}-public-subnet-3
-
   PrivateSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
       AvailabilityZone: !Select [ 0, !GetAZs  '' ]
       CidrBlock: !Ref PrivateSubnet1CidrBlock
       MapPublicIpOnLaunch: false
@@ -133,11 +96,11 @@ Resources:
           Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-private-subnet-1
-  
+      VpcId: !Ref VPC
+
   PrivateSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
       AvailabilityZone: !Select [ 1, !GetAZs  '' ]
       CidrBlock: !Ref PrivateSubnet2CidrBlock
       MapPublicIpOnLaunch: false
@@ -146,11 +109,11 @@ Resources:
           Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-private-subnet-2
+      VpcId: !Ref VPC
 
   PrivateSubnet3:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
       AvailabilityZone: !Select [ 2, !GetAZs  '' ]
       CidrBlock: !Ref PrivateSubnet3CidrBlock
       MapPublicIpOnLaunch: false
@@ -159,6 +122,46 @@ Resources:
           Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-private-subnet-3
+      VpcId: !Ref VPC
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: !Ref PublicSubnet1CidrBlock
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-public-subnet-1
+      VpcId: !Ref VPC
+
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+      CidrBlock: !Ref PublicSubnet2CidrBlock
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-public-subnet-2
+      VpcId: !Ref VPC
+
+  PublicSubnet3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 2, !GetAZs  '' ]
+      CidrBlock: !Ref PublicSubnet3CidrBlock
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-public-subnet-3
+      VpcId: !Ref VPC
 
   NatGateway1EIP:
     Type: AWS::EC2::EIP
@@ -229,20 +232,20 @@ Resources:
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref VPC
       Tags:
         - Key: Project
           Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-public-rt
-  
+      VpcId: !Ref VPC
+
   DefaultPublicRoute:
     Type: AWS::EC2::Route
     DependsOn: InternetGatewayAttachment
     Properties:
-      RouteTableId: !Ref PublicRouteTable
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
+      RouteTableId: !Ref PublicRouteTable
 
   PublicSubnet1RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -265,19 +268,19 @@ Resources:
   PrivateRouteTable1:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref VPC
       Tags:
         - Key: Project
           Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-private-rt-1
+      VpcId: !Ref VPC
 
   DefaultPrivateRoute1:
     Type: AWS::EC2::Route
     Properties:
-      RouteTableId: !Ref PrivateRouteTable1
       DestinationCidrBlock: 0.0.0.0/0
       NatGatewayId: !Ref NatGateway1
+      RouteTableId: !Ref PrivateRouteTable1
 
   PrivateSubnet1RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -288,19 +291,19 @@ Resources:
   PrivateRouteTable2:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref VPC
       Tags:
         - Key: Project
           Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-private-rt-2
+      VpcId: !Ref VPC
 
   DefaultPrivateRoute2:
     Type: AWS::EC2::Route
     Properties:
-      RouteTableId: !Ref PrivateRouteTable2
       DestinationCidrBlock: 0.0.0.0/0
       NatGatewayId: !Ref NatGateway2
+      RouteTableId: !Ref PrivateRouteTable2
 
   PrivateSubnet2RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -321,9 +324,9 @@ Resources:
   DefaultPrivateRoute3:
     Type: AWS::EC2::Route
     Properties:
-      RouteTableId: !Ref PrivateRouteTable3
       DestinationCidrBlock: 0.0.0.0/0
       NatGatewayId: !Ref NatGateway3
+      RouteTableId: !Ref PrivateRouteTable3
 
   PrivateSubnet3RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -331,95 +334,101 @@ Resources:
       RouteTableId: !Ref PrivateRouteTable3
       SubnetId: !Ref PrivateSubnet3
 
-  ParamVPC:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Description: The id for the VPC
-      Name: '/mindLAMP-platform-v2/vpc/id'
-      Value: !Ref VPC
-      Type: String
-      Tags:
-        Project: !Sub ${ProjectName}
-
-  ParamPublicSubnet1:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Description: The id for public subnet 1
-      Name: '/mindLAMP-platform-v2/vpc/public_subnet_1'
-      Value: !Ref PublicSubnet1
-      Type: String
-      Tags:
-        Project: !Sub ${ProjectName}
-
-  ParamPublicSubnet2:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Description: The id for public subnet 2
-      Name: '/mindLAMP-platform-v2/vpc/public_subnet_2'
-      Value: !Ref PublicSubnet2
-      Type: String
-      Tags:
-        Project: !Sub ${ProjectName}
-
-  ParamPublicSubnet3:
-    Type: AWS::SSM::Parameter
-    Properties:
-      Description: The id for public subnet 3
-      Name: '/mindLAMP-platform-v2/vpc/public_subnet_3'
-      Value: !Ref PublicSubnet3
-      Type: String
-      Tags:
-        Project: !Sub ${ProjectName}
-
   ParamPrivateSubnet1:
     Type: AWS::SSM::Parameter
     Properties:
       Description: The id for private subnet 1
-      Name: '/mindLAMP-platform-v2/vpc/private_subnet_1'
-      Value: !Ref PrivateSubnet1
-      Type: String
+      Name: /mindLAMP-platform-v2/vpc/private_subnet_1
       Tags:
         Project: !Sub ${ProjectName}
+      Type: String
+      Value: !Ref PrivateSubnet1
 
   ParamPrivateSubnet2:
     Type: AWS::SSM::Parameter
     Properties:
       Description: The id for private subnet 2
-      Name: '/mindLAMP-platform-v2/vpc/private_subnet_2'
-      Value: !Ref PrivateSubnet2
-      Type: String
+      Name: /mindLAMP-platform-v2/vpc/private_subnet_2
       Tags:
         Project: !Sub ${ProjectName}
+      Type: String
+      Value: !Ref PrivateSubnet2
 
   ParamPrivateSubnet3:
     Type: AWS::SSM::Parameter
     Properties:
       Description: The id for private subnet 3
-      Name: '/mindLAMP-platform-v2/vpc/private_subnet_3'
-      Value: !Ref PrivateSubnet3
-      Type: String
+      Name: /mindLAMP-platform-v2/vpc/private_subnet_3
       Tags:
         Project: !Sub ${ProjectName}
+      Type: String
+      Value: !Ref PrivateSubnet3
+
+  ParamPublicSubnet1:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: The id for public subnet 1
+      Name: /mindLAMP-platform-v2/vpc/public_subnet_1
+      Tags:
+        Project: !Sub ${ProjectName}
+      Type: String
+      Value: !Ref PublicSubnet1
+
+  ParamPublicSubnet2:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: The id for public subnet 2
+      Name: /mindLAMP-platform-v2/vpc/public_subnet_2
+      Tags:
+        Project: !Sub ${ProjectName}
+      Type: String
+      Value: !Ref PublicSubnet2
+
+  ParamPublicSubnet3:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: The id for public subnet 3
+      Name: /mindLAMP-platform-v2/vpc/public_subnet_3
+      Tags:
+        Project: !Sub ${ProjectName}
+      Type: String
+      Value: !Ref PublicSubnet3
+
+  ParamVPC:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: The id for the VPC
+      Name: /mindLAMP-platform-v2/vpc/id
+      Tags:
+        Project: !Sub ${ProjectName}
+      Type: String
+      Value: !Ref VPC
 
 Outputs:
-  VpcId:
-    Description: VPC Id
-    Value: !Ref VPC
-  PublicSubnet1Id:
-    Description: Public Subnet 1 Id
-    Value: !Ref PublicSubnet1
-  PublicSubnet2Id:
-    Description: Public Subnet 2 Id
-    Value: !Ref PublicSubnet2
-  PublicSubnet3Id:
-    Description: Public Subnet 3 Id
-    Value: !Ref PublicSubnet3
   PrivateSubnet1Id:
     Description: Private Subnet 1 Id
     Value: !Ref PrivateSubnet1
+
   PrivateSubnet2Id:
     Description: Private Subnet 2 Id
     Value: !Ref PrivateSubnet2
+
   PrivateSubnet3Id:
     Description: Private Subnet 3 Id
     Value: !Ref PrivateSubnet3
+
+  PublicSubnet1Id:
+    Description: Public Subnet 1 Id
+    Value: !Ref PublicSubnet1
+
+  PublicSubnet2Id:
+    Description: Public Subnet 2 Id
+    Value: !Ref PublicSubnet2
+
+  PublicSubnet3Id:
+    Description: Public Subnet 3 Id
+    Value: !Ref PublicSubnet3
+
+  VpcId:
+    Description: VPC Id
+    Value: !Ref VPC
