@@ -78,7 +78,6 @@ Resources:
       Port: 27017
       PreferredBackupWindow: 07:34-08:04
       PreferredMaintenanceWindow: sat:04:51-sat:05:21
-      SnapshotIdentifier: !Sub ${ProjectName}-docdb-cluster-snapshot-id
       StorageEncrypted: true
       Tags:
         - Key: Project
@@ -184,11 +183,6 @@ Resources:
         - !Ref PrivateSubnet1
         - !Ref PrivateSubnet2
         - !Ref PrivateSubnet3
-      Tags: 
-        - Key: Project
-          Value: !Sub ${ProjectName}
-        - Key: Name
-          Value: !Sub ${ProjectName}-secrets-manager-vpce
       VpcEndpointType: Interface
       VpcId: !Ref VPC
 
@@ -222,8 +216,7 @@ Resources:
       HostedRotationLambda:
         RotationType: MongoDBSingleUser
         RotationLambdaName: MongoDBSingleUser
-        VpcSecurityGroupIds:
-          - !Ref DocDBSecurityGroup
+        VpcSecurityGroupIds: !Ref DocDBSecurityGroup
         VpcSubnetIds:
           Fn::Join:
           - ","
