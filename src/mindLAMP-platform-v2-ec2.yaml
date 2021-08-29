@@ -241,11 +241,6 @@ Resources:
     Properties:
       Roles:
         - Ref: EC2InstanceRole
-      Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
-        - Key: Name
-          Value: !Sub ${ProjectName}-ec2-instance-profile
 
   EC2Instance01:
     Type: AWS::EC2::Instance
@@ -254,7 +249,7 @@ Resources:
       BlockDeviceMappings: 
         - DeviceName: /dev/sdf
           Ebs: 
-            DeleteOnTermination: false
+            DeleteOnTermination: true
             Encrypted: true
             KmsKeyId: !Ref KmsKeyArn
             VolumeSize: 4096
