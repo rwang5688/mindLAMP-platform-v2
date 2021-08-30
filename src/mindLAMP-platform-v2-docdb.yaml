@@ -61,7 +61,22 @@ Resources:
           Value: !Sub ${ProjectName}-docdb-sg
       VpcId: !Ref VPC
 
-  DocDBCluster:
+  SecretsManagerVPCEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds: 
+        - !Ref DocDBSecurityGroup
+      ServiceName:
+        Fn::Sub: com.amazonaws.${AWS::Region}.secretsmanager
+      SubnetIds:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+        - !Ref PrivateSubnet3
+      VpcEndpointType: Interface
+      VpcId: !Ref VPC
+
+    DocDBCluster:
     Type: AWS::DocDB::DBCluster
     Properties: 
       BackupRetentionPeriod: 8
@@ -102,6 +117,46 @@ Resources:
           Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-docdb-cluster-parameter-group
+
+  DocDBClusterSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: !Sub ${ProjectName}-docdb-cluster secret
+      GenerateSecretString:
+        ExcludeCharacters: "\"@/\\"
+        GenerateStringKey: password
+        PasswordLength: 16
+        SecretStringTemplate: '{"username": "docdbadmin","ssl": true}'
+      Tags:
+        - Key: Project
+          Value: !Sub ${ProjectName}
+        - Key: Name
+          Value: !Sub ${ProjectName}-docdb-cluster-secret
+
+  DocDBClusterSecretRotationSchedule:
+    Type: AWS::SecretsManager::RotationSchedule
+    DependsOn: DocDBClusterSecretTargetAttachment
+    Properties:
+      SecretId: !Ref DocDBClusterSecret
+      HostedRotationLambda:
+        RotationType: MongoDBSingleUser
+        RotationLambdaName: MongoDBSingleUser
+        VpcSecurityGroupIds: !Ref DocDBSecurityGroup
+        VpcSubnetIds:
+          Fn::Join:
+          - ","
+          - - !Ref PrivateSubnet1
+            - !Ref PrivateSubnet2
+            - !Ref PrivateSubnet3
+      RotationRules:
+        AutomaticallyAfterDays: 30
+
+  DocDBClusterSecretTargetAttachment:
+    Type: AWS::SecretsManager::SecretTargetAttachment
+    Properties:
+      SecretId: !Ref DocDBClusterSecret
+      TargetId: !Ref DocDBCluster
+      TargetType: AWS::DocDB::DBCluster
 
   DocDBInstance:
     Type: AWS::DocDB::DBInstance
@@ -161,6 +216,36 @@ Resources:
       Type: String
       Value: !GetAtt DocDBCluster.Port
 
+  ParamDocDBClusterReadEndpoint:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: DocDB cluster read endpoint
+      Name: /mindLAMP-platform-v2/docdb/docdb_cluster_read_endpoint
+      Tags:
+        Project: !Sub ${ProjectName}
+      Type: String
+      Value: !GetAtt DocDBCluster.ReadEndpoint
+
+  ParamDocDBClusterResourceId:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: DocDB cluster resource id
+      Name: /mindLAMP-platform-v2/docdb/docdb_cluster_resource_id
+      Tags:
+        Project: !Sub ${ProjectName}
+      Type: String
+      Value: !GetAtt DocDBCluster.ClusterResourceId
+
+  ParamDocDBClusterSecretArn:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: DocDB cluster secret ARN
+      Name: /mindLAMP-platform-v2/docdb/docdb_cluster_secret_arn
+      Tags:
+        Project: !Sub ${ProjectName}
+      Type: String
+      Value: !Ref DocDBClusterSecret
+
   ParamDocDBSecurityGroup:
     Type: AWS::SSM::Parameter
     Properties:
@@ -170,61 +255,6 @@ Resources:
         Project: !Sub ${ProjectName}
       Type: String
       Value: !Ref DocDBSecurityGroup
-
-  SecretsManagerVPCEndpoint:
-    Type: AWS::EC2::VPCEndpoint
-    Properties:
-      PrivateDnsEnabled: true
-      SecurityGroupIds: 
-        - !Ref DocDBSecurityGroup
-      ServiceName:
-        Fn::Sub: com.amazonaws.${AWS::Region}.secretsmanager
-      SubnetIds:
-        - !Ref PrivateSubnet1
-        - !Ref PrivateSubnet2
-        - !Ref PrivateSubnet3
-      VpcEndpointType: Interface
-      VpcId: !Ref VPC
-
-  DocDBClusterSecret:
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Description: ${ProjectName}-docdb-cluster secret
-      GenerateSecretString:
-        ExcludeCharacters: "\"@/\\"
-        GenerateStringKey: password
-        PasswordLength: 16
-        SecretStringTemplate: '{"username": "docdbadmin","ssl": true}'
-      Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
-        - Key: Name
-          Value: !Sub ${ProjectName}-docdb-cluster-secret
-
-  DocDBClusterSecretTargetAttachment:
-    Type: AWS::SecretsManager::SecretTargetAttachment
-    Properties:
-      SecretId: !Ref DocDBClusterSecret
-      TargetId: !Ref DocDBCluster
-      TargetType: AWS::DocDB::DBCluster
-
-  DocDBClusterSecretRotationSchedule:
-    Type: AWS::SecretsManager::RotationSchedule
-    DependsOn: DocDBClusterSecretTargetAttachment
-    Properties:
-      SecretId: !Ref DocDBClusterSecret
-      HostedRotationLambda:
-        RotationType: MongoDBSingleUser
-        RotationLambdaName: MongoDBSingleUser
-        VpcSecurityGroupIds: !Ref DocDBSecurityGroup
-        VpcSubnetIds:
-          Fn::Join:
-          - ","
-          - - !Ref PrivateSubnet1
-            - !Ref PrivateSubnet2
-            - !Ref PrivateSubnet3
-      RotationRules:
-        AutomaticallyAfterDays: 30
 
 Outputs:
   DocDBClusterEndpoint:
@@ -238,6 +268,18 @@ Outputs:
   DocDBClusterPort:
     Description: DocDB cluster port
     Value: !GetAtt DocDBCluster.Port
+
+  DocDBClusterReadEndpoint:
+    Description: DocDB cluster read endpoint
+    Value: !GetAtt DocDBCluster.ReadEndpoint
+
+  DocDBClusterResourceId:
+    Description: DocDB cluster resource id
+    Value: !GetAtt DocDBCluster.ClusterResourceId
+
+  DocDBClusterSecretArn:
+    Description: DocDB cluster secret ARN
+    Value: !Ref DocDBClusterSecret
 
   DocDBSecurityGroupId:
     Description: DocDB security group
