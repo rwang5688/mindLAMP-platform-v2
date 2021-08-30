@@ -76,7 +76,7 @@ Resources:
       VpcEndpointType: Interface
       VpcId: !Ref VPC
 
-    DocDBCluster:
+  DocDBCluster:
     Type: AWS::DocDB::DBCluster
     Properties: 
       BackupRetentionPeriod: 8
