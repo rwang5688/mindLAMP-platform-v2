@@ -1,2 +1,2 @@
 #!/bin/bash
-validate-mindLAMP-platform-v2-component.sh docdb
+validate-mindLAMP-platform-v2-comp.sh docdb

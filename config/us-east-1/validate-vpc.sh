@@ -1,2 +1,2 @@
 #!/bin/bash
-validate-mindLAMP-platform-v2-component.sh vpc
+validate-mindLAMP-platform-v2-comp.sh vpc
