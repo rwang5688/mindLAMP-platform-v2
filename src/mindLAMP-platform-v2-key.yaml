@@ -9,12 +9,16 @@ Parameters:
     Type: String
 
   KeyAliasNameSuffix:
-    ConstraintDescription: Suffix for the CMK key alias name; prefix is ${ProjectName}
-    Default: key
-    Description: Suffix for the CMK key alias name; prefix is ${ProjectName}
+    ConstraintDescription: Suffix for the CMK key alias name, e.g., GUID; full name is ${ProjectName}-key-${KeyAliasNameSuffix}
+    Description: Suffix for the CMK key alias name, e.g., GUID; full name is ${ProjectName}-key-${KeyAliasNameSuffix}
     Type: String
 
 Resources:
+  #########################
+  #
+  # KMS Key
+  #
+  #########################
   KmsKey:
     Type: AWS::KMS::Key
     Properties:
@@ -74,10 +78,8 @@ Resources:
           Resource: '*'
       PendingWindowInDays: 7
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
-          Value: !Sub ${ProjectName}-${KeyAliasNameSuffix}
+          Value: !Sub ${ProjectName}-key-${KeyAliasNameSuffix}
 
   KmsKeyAlias:
     Type: AWS::KMS::Alias
@@ -85,13 +87,16 @@ Resources:
       AliasName: !Sub alias/${ProjectName}-${KeyAliasNameSuffix}
       TargetKeyId: !Ref KmsKey
 
+  #########################
+  #
+  # Parameter Store Parameters
+  #
+  #########################
   ParamKeyArn:
     Type: AWS::SSM::Parameter
     Properties:
       Description: The ARN for KmsKey
       Name: /mindLAMP-platform-v2/kms/key_arn
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !Ref KmsKey
 
@@ -100,8 +105,6 @@ Resources:
     Properties:
       Description: The alias for KmsKey
       Name: /mindLAMP-platform-v2/kms/key_alias
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !Ref KmsKeyAlias
 

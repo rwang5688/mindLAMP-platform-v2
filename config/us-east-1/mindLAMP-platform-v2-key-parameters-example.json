@@ -5,7 +5,7 @@
     },
     {
         "ParameterKey": "KeyAliasNameSuffix",
-        "ParameterValue": "key"
+        "ParameterValue": "_guid_"
     }
 ]
 

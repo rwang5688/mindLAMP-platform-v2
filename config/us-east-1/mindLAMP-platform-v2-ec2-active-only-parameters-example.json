@@ -5,19 +5,18 @@
   },
   {
     "ParameterKey": "Configuration",
-    "ParameterValue": "active-passive-100"
+    "ParameterValue": "active-only"
   },
   {
     "ParameterKey": "DomainName",
-    "ParameterValue": "mindLAMP-platform-v2.octank-02.edu.rhw5688.com"
+    "ParameterValue": "mindLAMP-platform-v2.example.com"
   },
   {
     "ParameterKey": "HostedZoneId",
-    "ParameterValue": "Z088526421QWDIPRKSMV0"
+    "ParameterValue": "HOSTEDZONEID123456789"
   },
   {
     "ParameterKey": "KeyPair",
     "ParameterValue": "mindLAMP-platform-v2-ec2-us-east-1"
   }
 ]
-

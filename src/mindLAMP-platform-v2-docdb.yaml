@@ -49,33 +49,11 @@ Parameters:
     Type: String
 
 Resources:
-  DocDBSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: !Sub ${ProjectName} DocDB security group
-      GroupName: !Sub ${ProjectName}-docdb-sg
-      Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
-        - Key: Name
-          Value: !Sub ${ProjectName}-docdb-sg
-      VpcId: !Ref VPC
-
-  SecretsManagerVPCEndpoint:
-    Type: AWS::EC2::VPCEndpoint
-    Properties:
-      PrivateDnsEnabled: true
-      SecurityGroupIds: 
-        - !Ref DocDBSecurityGroup
-      ServiceName:
-        Fn::Sub: com.amazonaws.${AWS::Region}.secretsmanager
-      SubnetIds:
-        - !Ref PrivateSubnet1
-        - !Ref PrivateSubnet2
-        - !Ref PrivateSubnet3
-      VpcEndpointType: Interface
-      VpcId: !Ref VPC
-
+  #########################
+  #
+  # DocDB Cluster
+  #
+  #########################
   DocDBCluster:
     Type: AWS::DocDB::DBCluster
     Properties: 
@@ -95,13 +73,16 @@ Resources:
       PreferredMaintenanceWindow: sat:04:51-sat:05:21
       StorageEncrypted: true
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-docdb-cluster
       VpcSecurityGroupIds: 
         - !Ref DocDBSecurityGroup
 
+  #########################
+  #
+  # DocDB Cluster Parameter Group
+  #
+  #########################
   DocDBClusterParameterGroup:
     Type: AWS::DocDB::DBClusterParameterGroup
     Properties: 
@@ -113,11 +94,14 @@ Resources:
             tls: enabled
             ttl_monitor: enabled
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-docdb-cluster-parameter-group
 
+  #########################
+  #
+  # DocDB Cluster Secret
+  #
+  #########################
   DocDBClusterSecret:
     Type: AWS::SecretsManager::Secret
     Properties:
@@ -128,8 +112,6 @@ Resources:
         PasswordLength: 16
         SecretStringTemplate: '{"username": "docdbadmin","ssl": true}'
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-docdb-cluster-secret
 
@@ -158,6 +140,11 @@ Resources:
       TargetId: !Ref DocDBCluster
       TargetType: AWS::DocDB::DBCluster
 
+  #########################
+  #
+  # DocDB Instance
+  #
+  #########################
   DocDBInstance:
     Type: AWS::DocDB::DBInstance
     DependsOn: DocDBCluster
@@ -167,11 +154,29 @@ Resources:
       DBInstanceIdentifier: !Sub ${ProjectName}-docdb-instance
       PreferredMaintenanceWindow: sat:06:54-sat:07:24
       Tags: 
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-docdb-instance
 
+  #########################
+  #
+  # DocDB Security Group
+  #
+  #########################  
+  DocDBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${ProjectName} DocDB security group
+      GroupName: !Sub ${ProjectName}-docdb-sg
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-docdb-sg
+      VpcId: !Ref VPC
+
+  #########################
+  #
+  # DocDB Subnet Group
+  #
+  #########################  
   DocDBSubnetGroup: 
     Type: AWS::DocDB::DBSubnetGroup
     Properties: 
@@ -181,18 +186,39 @@ Resources:
         - !Ref PrivateSubnet2
         - !Ref PrivateSubnet3
       Tags: 
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-docdb-subnet-group
 
+  #########################
+  #
+  # VPC Endpoints
+  #
+  #########################  
+  SecretsManagerVPCEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      PrivateDnsEnabled: true
+      SecurityGroupIds: 
+        - !Ref DocDBSecurityGroup
+      ServiceName:
+        Fn::Sub: com.amazonaws.${AWS::Region}.secretsmanager
+      SubnetIds:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+        - !Ref PrivateSubnet3
+      VpcEndpointType: Interface
+      VpcId: !Ref VPC
+
+  #########################
+  #
+  # Parameter Store Parameters
+  #
+  #########################
   ParamDocDBClusterEndpoint:
     Type: AWS::SSM::Parameter
     Properties:
       Description: DocDB cluster endpoint
       Name: /mindLAMP-platform-v2/docdb/docdb_cluster_endpoint
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !GetAtt DocDBCluster.Endpoint
 
@@ -201,8 +227,6 @@ Resources:
     Properties:
       Description: DocDB cluster id
       Name: /mindLAMP-platform-v2/docdb/docdb_cluster_id
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !Ref DocDBCluster
 
@@ -211,8 +235,6 @@ Resources:
     Properties:
       Description: DocDB cluster port
       Name: /mindLAMP-platform-v2/docdb/docdb_cluster_port
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !GetAtt DocDBCluster.Port
 
@@ -221,8 +243,6 @@ Resources:
     Properties:
       Description: DocDB cluster read endpoint
       Name: /mindLAMP-platform-v2/docdb/docdb_cluster_read_endpoint
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !GetAtt DocDBCluster.ReadEndpoint
 
@@ -231,8 +251,6 @@ Resources:
     Properties:
       Description: DocDB cluster resource id
       Name: /mindLAMP-platform-v2/docdb/docdb_cluster_resource_id
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !GetAtt DocDBCluster.ClusterResourceId
 
@@ -241,8 +259,6 @@ Resources:
     Properties:
       Description: DocDB cluster secret ARN
       Name: /mindLAMP-platform-v2/docdb/docdb_cluster_secret_arn
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !Ref DocDBClusterSecret
 
@@ -251,8 +267,6 @@ Resources:
     Properties:
       Description: DocDB security group id
       Name: /mindLAMP-platform-v2/docdb/docdb_security_group
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !Ref DocDBSecurityGroup
 
