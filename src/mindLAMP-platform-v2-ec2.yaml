@@ -110,6 +110,11 @@ Mappings:
       InstanceType: c5d.2xlarge
 
 Resources:
+  #########################
+  #
+  # EC2 Security Group
+  #
+  #########################
   EC2SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -139,8 +144,6 @@ Resources:
         IpProtocol: tcp
         ToPort: 443
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-ec2-sg
 
@@ -214,6 +217,17 @@ Resources:
       SourceSecurityGroupId: !Ref EC2SecurityGroup
       ToPort: 27017
 
+  #########################
+  #
+  # EC2 Instance Profile
+  #
+  #########################
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - Ref: EC2InstanceRole
+
   EC2InstanceRole:
     Type: AWS::IAM::Role
     Properties:
@@ -231,17 +245,14 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonDocDBFullAccess
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-ec2-instance-role
 
-  EC2InstanceProfile:
-    Type: AWS::IAM::InstanceProfile
-    Properties:
-      Roles:
-        - Ref: EC2InstanceRole
-
+  #########################
+  #
+  # EC2 Instances
+  #
+  #########################
   EC2Instance01:
     Type: AWS::EC2::Instance
     Condition: CreateEC2Instance01
@@ -273,8 +284,6 @@ Resources:
         - Ref: EC2SecurityGroup
       SubnetId: !Ref PublicSubnet1
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-ec2-instance-01
       UserData:
@@ -357,8 +366,6 @@ Resources:
         - Ref: EC2SecurityGroup
       SubnetId: !Ref PublicSubnet2
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-ec2-instance-02
       UserData:
@@ -441,8 +448,6 @@ Resources:
         - Ref: EC2SecurityGroup
       SubnetId: !Ref PublicSubnet3
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-ec2-instance-03
       UserData:
@@ -525,8 +530,6 @@ Resources:
         - Ref: EC2SecurityGroup
       SubnetId: !Ref PublicSubnet2
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-ec2-instance-04
       UserData:
@@ -583,14 +586,17 @@ Resources:
           cd /home/ec2-user/
           date >> timestamps.txt
 
+  #########################
+  #
+  # EIPs
+  #
+  #########################
   EIP01:
     Type: AWS::EC2::EIP
     Condition: CreateEC2Instance01
     Properties:
       InstanceId: !Ref EC2Instance01
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-ec2-instance-01-eip
 
@@ -600,8 +606,6 @@ Resources:
     Properties:
       InstanceId: !Ref EC2Instance02
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-ec2-instance-02-eip
 
@@ -611,8 +615,6 @@ Resources:
     Properties:
       InstanceId: !Ref EC2Instance03
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-ec2-instance-03-eip
 
@@ -622,11 +624,14 @@ Resources:
     Properties:
       InstanceId: !Ref EC2Instance04
       Tags:
-        - Key: Project
-          Value: !Sub ${ProjectName}
         - Key: Name
           Value: !Sub ${ProjectName}-ec2-instance-04-eip
 
+  #########################
+  #
+  # DNS Entries
+  #
+  #########################
   DNSEntries01:
     Type: AWS::Route53::RecordSetGroup
     Condition: CreateEC2Instance01
