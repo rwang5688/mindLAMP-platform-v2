@@ -1,2 +1,3 @@
-# generated files
+# project specific files
 mindLAMP-platform-v2-ec2*-parameters.json
+mindLAMP-platform-v2-kms-parameters.json
