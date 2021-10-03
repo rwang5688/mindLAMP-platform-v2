@@ -1,2 +1,2 @@
 #!/bin/bash
-create-mindLAMP-platform-v2-component.sh vpc us-east-1 default
+create-mindLAMP-platform-v2-comp.sh vpc us-east-1 default mindLAMP-platform-v2

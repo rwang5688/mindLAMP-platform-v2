@@ -1,2 +1,2 @@
 #!/bin/bash
-validate-mindLAMP-platform-v2-component.sh ec2
+validate-mindLAMP-platform-v2-comp.sh ec2
