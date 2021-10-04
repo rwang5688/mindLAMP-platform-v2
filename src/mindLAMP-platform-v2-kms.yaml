@@ -95,7 +95,7 @@ Resources:
   ParamKeyArn:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: The ARN for KmsKey
+      Description: KMS Key ARN
       Name: /mindLAMP-platform-v2/kms/key_arn
       Type: String
       Value: !Ref KmsKey
@@ -103,16 +103,16 @@ Resources:
   ParamKeyAlias:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: The alias for KmsKey
+      Description: KMS Key Alias
       Name: /mindLAMP-platform-v2/kms/key_alias
       Type: String
       Value: !Ref KmsKeyAlias
 
 Outputs:
   KeyArn:
-    Description: The ARN for KmsKey
+    Description: KMS Key ARN
     Value: !Ref KmsKey
 
   KeyAlias:
-    Description: The Alias for KmsKey
+    Description: KMS Key Alias
     Value: !Ref KmsKeyAlias
