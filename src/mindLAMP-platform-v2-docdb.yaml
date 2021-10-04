@@ -217,7 +217,7 @@ Resources:
   ParamDocDBClusterEndpoint:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: DocDB cluster endpoint
+      Description: DocDB Cluster Endpoint
       Name: /mindLAMP-platform-v2/docdb/docdb_cluster_endpoint
       Type: String
       Value: !GetAtt DocDBCluster.Endpoint
@@ -225,7 +225,7 @@ Resources:
   ParamDocDBClusterId:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: DocDB cluster id
+      Description: DocDB Cluster Id
       Name: /mindLAMP-platform-v2/docdb/docdb_cluster_id
       Type: String
       Value: !Ref DocDBCluster
@@ -233,7 +233,7 @@ Resources:
   ParamDocDBClusterPort:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: DocDB cluster port
+      Description: DocDB Cluster Port
       Name: /mindLAMP-platform-v2/docdb/docdb_cluster_port
       Type: String
       Value: !GetAtt DocDBCluster.Port
@@ -241,7 +241,7 @@ Resources:
   ParamDocDBClusterReadEndpoint:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: DocDB cluster read endpoint
+      Description: DocDB Cluster Read Endpoint
       Name: /mindLAMP-platform-v2/docdb/docdb_cluster_read_endpoint
       Type: String
       Value: !GetAtt DocDBCluster.ReadEndpoint
@@ -249,7 +249,7 @@ Resources:
   ParamDocDBClusterResourceId:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: DocDB cluster resource id
+      Description: DocDB Cluster Resource Id
       Name: /mindLAMP-platform-v2/docdb/docdb_cluster_resource_id
       Type: String
       Value: !GetAtt DocDBCluster.ClusterResourceId
@@ -257,7 +257,7 @@ Resources:
   ParamDocDBClusterSecretArn:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: DocDB cluster secret ARN
+      Description: DocDB Cluster Secret ARN
       Name: /mindLAMP-platform-v2/docdb/docdb_cluster_secret_arn
       Type: String
       Value: !Ref DocDBClusterSecret
@@ -265,36 +265,36 @@ Resources:
   ParamDocDBSecurityGroup:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: DocDB security group id
+      Description: DocDB Security Group Id
       Name: /mindLAMP-platform-v2/docdb/docdb_security_group
       Type: String
       Value: !Ref DocDBSecurityGroup
 
 Outputs:
   DocDBClusterEndpoint:
-    Description: DocDB cluster endpoint
+    Description: DocDB Cluster Endpoint
     Value: !GetAtt DocDBCluster.Endpoint
 
   DocDBClusterId:
-    Description: DocDB cluster id
+    Description: DocDB Cluster Id
     Value: !Ref DocDBCluster
 
   DocDBClusterPort:
-    Description: DocDB cluster port
+    Description: DocDB Cluster Port
     Value: !GetAtt DocDBCluster.Port
 
   DocDBClusterReadEndpoint:
-    Description: DocDB cluster read endpoint
+    Description: DocDB Cluster Read Endpoint
     Value: !GetAtt DocDBCluster.ReadEndpoint
 
   DocDBClusterResourceId:
-    Description: DocDB cluster resource id
+    Description: DocDB Cluster Resource Id
     Value: !GetAtt DocDBCluster.ClusterResourceId
 
   DocDBClusterSecretArn:
-    Description: DocDB cluster secret ARN
+    Description: DocDB Cluster Secret ARN
     Value: !Ref DocDBClusterSecret
 
   DocDBSecurityGroupId:
-    Description: DocDB security group
+    Description: DocDB Security Group Id
     Value: !Ref DocDBSecurityGroup

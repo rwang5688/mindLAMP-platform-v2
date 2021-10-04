@@ -744,43 +744,176 @@ Resources:
           TTL: 60
           Type: A
 
-Outputs:
-  EC2Instance01Id:
+  #########################
+  #
+  # Parameter Store Parameters
+  #
+  #########################
+  ParamNode01DomainName:
+    Type: AWS::SSM::Parameter
     Condition: CreateEC2Instance01
-    Description: EC2 Instance 01 Id
+    Properties:
+      Description: Node 01 Domain Name
+      Name: /mindLAMP-platform-v2/ec2/node_01_domain_name
+      Type: String
+      Value: !Sub "node-01.${DomainName}"
+
+  ParamNode02DomainName:
+    Type: AWS::SSM::Parameter
+    Condition: CreateEC2Instance02
+    Properties:
+      Description: Node 02 Domain Name
+      Name: /mindLAMP-platform-v2/ec2/node_02_domain_name
+      Type: String
+      Value: !Sub "node-02.${DomainName}"
+
+  ParamNode03DomainName:
+    Type: AWS::SSM::Parameter
+    Condition: CreateEC2Instance03
+    Properties:
+      Description: Node 03 Domain Name
+      Name: /mindLAMP-platform-v2/ec2/node_03_domain_name
+      Type: String
+      Value: !Sub "node-03.${DomainName}"
+
+  ParamNode04DomainName:
+    Type: AWS::SSM::Parameter
+    Condition: CreateEC2Instance04
+    Properties:
+      Description: Node 04 Domain Name
+      Name: /mindLAMP-platform-v2/ec2/node_04_domain_name
+      Type: String
+      Value: !Sub "node-04.${DomainName}"
+
+  ParamNode01InstanceId:
+    Type: AWS::SSM::Parameter
+    Condition: CreateEC2Instance01
+    Properties:
+      Description: Node 01 Instance Id
+      Name: /mindLAMP-platform-v2/ec2/node_01_instance_id
+      Type: String
+      Value: !Ref EC2Instance01
+
+  ParamNode02InstanceId:
+    Type: AWS::SSM::Parameter
+    Condition: CreateEC2Instance02
+    Properties:
+      Description: Node 02 Instance Id
+      Name: /mindLAMP-platform-v2/ec2/node_02_instance_id
+      Type: String
+      Value: !Ref EC2Instance02
+
+  ParamNode03InstanceId:
+    Type: AWS::SSM::Parameter
+    Condition: CreateEC2Instance03
+    Properties:
+      Description: Node 03 Instance Id
+      Name: /mindLAMP-platform-v2/ec2/node_03_instance_id
+      Type: String
+      Value: !Ref EC2Instance03
+
+  ParamNode04InstanceId:
+    Type: AWS::SSM::Parameter
+    Condition: CreateEC2Instance04
+    Properties:
+      Description: Node 04 Instance Id
+      Name: /mindLAMP-platform-v2/ec2/node_04_instance_id
+      Type: String
+      Value: !Ref EC2Instance04
+
+  ParamNode01Eip:
+    Type: AWS::SSM::Parameter
+    Condition: CreateEC2Instance01
+    Properties:
+      Description: Node 01 EIP
+      Name: /mindLAMP-platform-v2/ec2/node_01_eip
+      Type: String
+      Value: !Ref EIP01
+
+  ParamNode02Eip:
+    Type: AWS::SSM::Parameter
+    Condition: CreateEC2Instance02
+    Properties:
+      Description: Node 02 EIP
+      Name: /mindLAMP-platform-v2/ec2/node_02_eip
+      Type: String
+      Value: !Ref EIP02
+
+  ParamNode03Eip:
+    Type: AWS::SSM::Parameter
+    Condition: CreateEC2Instance03
+    Properties:
+      Description: Node 03 EIP
+      Name: /mindLAMP-platform-v2/ec2/node_03_eip
+      Type: String
+      Value: !Ref EIP03
+
+  ParamNode04Eip:
+    Type: AWS::SSM::Parameter
+    Condition: CreateEC2Instance04
+    Properties:
+      Description: Node 04 EIP
+      Name: /mindLAMP-platform-v2/ec2/node_04_eip
+      Type: String
+      Value: !Ref EIP04
+
+Outputs:
+  Node01DomainName:
+    Condition: CreateEC2Instance01
+    Description: Node 01 Domain Name
+    Value: !Sub "node-01.${DomainName}"
+
+  Node02DomainName:
+    Condition: CreateEC2Instance02
+    Description: Node 02 Domain Name
+    Value: !Sub "node-02.${DomainName}"
+
+  Node03DomainName:
+    Condition: CreateEC2Instance03
+    Description: Node 03 Domain Name
+    Value: !Sub "node-03.${DomainName}"
+
+  Node04DomainName:
+    Condition: CreateEC2Instance04
+    Description: Node 04 Domain Name
+    Value: !Sub "node-04.${DomainName}"
+
+  Node01InstanceId:
+    Condition: CreateEC2Instance01
+    Description: Node 01 Instance Id
     Value: !Ref EC2Instance01
 
-  EC2Instance02Id:
+  Node02InstanceId:
     Condition: CreateEC2Instance02
-    Description: EC2 Instance 02 Id
+    Description: Node 02 Instance Id
     Value: !Ref EC2Instance02
 
-  EC2Instance03Id:
+  Node03InstanceId:
     Condition: CreateEC2Instance03
-    Description: EC2 Instance 03 Id
+    Description: Node 03 Instance Id
     Value: !Ref EC2Instance03
 
-  EC2Instance04Id:
+  Node04InstanceId:
     Condition: CreateEC2Instance04
-    Description: EC2 Instance 04 Id
+    Description: Node 04 Instance Id
     Value: !Ref EC2Instance04
 
-  EIP01:
+  Node01Eip:
     Condition: CreateEC2Instance01
-    Description: Elastic IP 01
+    Description: Node 01 EIP
     Value: !Ref EIP01
 
-  EIP02:
+  Node02Eip:
     Condition: CreateEC2Instance02
-    Description: Elastic IP 02
+    Description: Node 02 EIP
     Value: !Ref EIP02
 
-  EIP03:
+  Node03Eip:
     Condition: CreateEC2Instance03
-    Description: Elastic IP 03
+    Description: Node 03 EIP
     Value: !Ref EIP03
 
-  EIP04:
+  Node04Eip:
     Condition: CreateEC2Instance04
-    Description: Elastic IP 04
+    Description: Node 04 EIP
     Value: !Ref EIP04

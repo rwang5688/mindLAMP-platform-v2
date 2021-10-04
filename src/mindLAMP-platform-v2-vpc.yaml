@@ -323,70 +323,56 @@ Resources:
   ParamPrivateSubnet1:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: The id for private subnet 1
+      Description: Private Subnet 1 Id
       Name: /mindLAMP-platform-v2/vpc/private_subnet_1
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !Ref PrivateSubnet1
 
   ParamPrivateSubnet2:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: The id for private subnet 2
+      Description: Private Subnet 2 Id
       Name: /mindLAMP-platform-v2/vpc/private_subnet_2
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !Ref PrivateSubnet2
 
   ParamPrivateSubnet3:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: The id for private subnet 3
+      Description: Private Subnet 3 Id
       Name: /mindLAMP-platform-v2/vpc/private_subnet_3
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !Ref PrivateSubnet3
 
   ParamPublicSubnet1:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: The id for public subnet 1
+      Description: Public Subnet 1 Id
       Name: /mindLAMP-platform-v2/vpc/public_subnet_1
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !Ref PublicSubnet1
 
   ParamPublicSubnet2:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: The id for public subnet 2
+      Description: Public Subnet 2 Id
       Name: /mindLAMP-platform-v2/vpc/public_subnet_2
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !Ref PublicSubnet2
 
   ParamPublicSubnet3:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: The id for public subnet 3
+      Description: Public Subnet 3 Id
       Name: /mindLAMP-platform-v2/vpc/public_subnet_3
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !Ref PublicSubnet3
 
   ParamVPC:
     Type: AWS::SSM::Parameter
     Properties:
-      Description: The id for the VPC
+      Description: VPC Id
       Name: /mindLAMP-platform-v2/vpc/id
-      Tags:
-        Project: !Sub ${ProjectName}
       Type: String
       Value: !Ref VPC
 
