@@ -749,6 +749,14 @@ Resources:
   # Parameter Store Parameters
   #
   #########################
+  ParamEC2SecurityGroup:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Description: EC2 Security Group Id
+      Name: /mindLAMP-platform-v2/ec2/ec2_security_group
+      Type: String
+      Value: !Ref EC2SecurityGroup
+
   ParamNode01DomainName:
     Type: AWS::SSM::Parameter
     Condition: CreateEC2Instance01
@@ -858,6 +866,10 @@ Resources:
       Value: !Ref EIP04
 
 Outputs:
+  EC2SecurityGroupId:
+    Description: EC2 Security Group Id
+    Value: !Ref EC2SecurityGroup
+
   Node01DomainName:
     Condition: CreateEC2Instance01
     Description: Node 01 Domain Name
