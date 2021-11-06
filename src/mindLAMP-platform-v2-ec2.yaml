@@ -207,6 +207,21 @@ Resources:
       SourceSecurityGroupId: !Ref EC2SecurityGroup
       ToPort: 4789
 
+  EC2SecurityGroupIngressCatchAll:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      Description: Catch All from EC2 Security Group
+      FromPort: -1
+      GroupId: !Ref EC2SecurityGroup
+      IpProtocol: -1
+      SourceSecurityGroupId: !Ref EC2SecurityGroup
+      ToPort: -1
+
+  #########################
+  #
+  # DocDB Security Group
+  #
+  #########################
   DocDBSecurityGroupIngress01:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
